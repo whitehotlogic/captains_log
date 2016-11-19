@@ -14,8 +14,7 @@ def create_database(conn):
                 engine_number INTEGER,
                 owner_name TEXT NOT NULL,
                 owner_certification_agency TEXT,
-                owner_certification_number TEXT,
-                PRIMARY KEY(name)
+                owner_certification_number TEXT
             );
         """)
         cur.execute("""
