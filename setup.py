@@ -1,23 +1,27 @@
 import json
 from config.config_example import CONFIG as EXAMPLE_CONFIG
 
-NEW_CONFIG = {}
-EXAMPLE_CONFIG = EXAMPLE_CONFIG
 
+def run_setup():
 
-def get_response(key):
-    response = raw_input("what is the {0}? ".format(key))
-    try:
-        if type(EXAMPLE_CONFIG[key]) == int:
-            response = int(response)
-    except ValueError:
-        print("An integer value must be supplied. Try again: ")
-        return get_response(key)
-    NEW_CONFIG[key] = response
+    NEW_CONFIG = {}
 
-for key in EXAMPLE_CONFIG:
-    get_response(key)
+    def get_response(key):
+        try:
+            response = raw_input("what is the {0}? ".format(key))
+        except NameError:  # python 2/3 compatible
+            response = input("what is the {0}? ".format(key))
+        try:
+            if type(EXAMPLE_CONFIG[key]) == int:
+                response = int(response)
+        except ValueError:
+            print("An integer value must be supplied. Try again: ")
+            return get_response(key)
+        NEW_CONFIG[key] = response
 
-with open("config/config.py", "w") as file:
-    file.write("CONFIG = " + str(json.dumps(
-        NEW_CONFIG, sort_keys=True, indent=4, separators=(',', ': '))))
+    for key in EXAMPLE_CONFIG:
+        get_response(key)
+
+    with open("config/config.py", "w") as file:
+        file.write("CONFIG = " + str(json.dumps(
+            NEW_CONFIG, sort_keys=True, indent=4, separators=(',', ': '))))
