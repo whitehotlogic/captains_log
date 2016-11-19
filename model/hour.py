@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def insert_into_data(self, kwargs):
+def insert_into_hour(self, kwargs):
     vessel = kwargs.get("vessel", None)
     day = 1  # TODO: select day id based on vessel and current date
     current_time = datetime.now().time()

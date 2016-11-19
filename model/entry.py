@@ -1,7 +1,7 @@
 import sqlite3
 
 from .create_database import create_database
-from .data import insert_into_data
+from .hour import insert_into_hour
 from .day import insert_into_day
 from .vessel import insert_into_vessel
 
@@ -22,4 +22,4 @@ class Entry:
         return insert_into_day(self.conn, kwargs)
 
     def insert_hourly_entry(self, **kwargs):
-        return insert_into_data(self.conn, kwargs)
+        return insert_into_hour(self.conn, kwargs)
