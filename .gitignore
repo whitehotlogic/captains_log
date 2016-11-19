@@ -91,3 +91,6 @@ ENV/
 
 # Database
 *.db
+
+# Configuration
+config/config.py
