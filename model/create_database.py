@@ -34,8 +34,8 @@ def create_database(conn):
         """)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS day (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                vessel int NOT NULL REFERENCES vessel,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                vessel_id int NOT NULL REFERENCES vessel,
                 date TEXT NOT NULL,
                 port_of_call_start TEXT,
                 port_of_call_end TEXT,
@@ -46,7 +46,7 @@ def create_database(conn):
             );
         """)
         cur.execute("""
-            CREATE INDEX IF NOT EXISTS day_vessel ON day (vessel);
+            CREATE INDEX IF NOT EXISTS day_vessel_id ON day (vessel_id);
         """)
         cur.execute("""
             CREATE INDEX IF NOT EXISTS day_date
@@ -67,10 +67,10 @@ def create_database(conn):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS hour (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                vessel int NOT NULL REFERENCES vessel,
-                day TEXT NOT NULL REFERENCES day,
-                time TEXT NOT NULL,
+                day_id int NOT NULL REFERENCES day,
+                time INTEGER NOT NULL,
                 course INTEGER,
+                speed INTEGER,
                 latitude NUMERIC,
                 longitude INTEGER,
                 weather TEXT,
@@ -84,16 +84,13 @@ def create_database(conn):
             );
         """)
         cur.execute("""
-            CREATE INDEX IF NOT EXISTS hour_vessel ON hour (vessel);
+            CREATE INDEX IF NOT EXISTS hour_day_id_asc ON hour (day_id ASC);
         """)
         cur.execute("""
-            CREATE INDEX IF NOT EXISTS hour_day_asc ON hour (day ASC);
+            CREATE INDEX IF NOT EXISTS hour_day_id_desc ON hour (day_id DESC);
         """)
         cur.execute("""
-            CREATE INDEX IF NOT EXISTS hour_day_desc ON hour (day DESC);
-        """)
-        cur.execute("""
-            CREATE INDEX IF NOT EXISTS hour_datetime ON hour (day, time);
+            CREATE INDEX IF NOT EXISTS hour_day_id_time ON hour (day_id, time);
         """)
         cur.execute("""
             CREATE INDEX IF NOT EXISTS hour_position

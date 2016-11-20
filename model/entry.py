@@ -2,7 +2,7 @@ import sqlite3
 
 from .create_database import create_database
 from .hour import insert_into_hour
-from .day import insert_into_day
+from .day import insert_into_day, update_total_distance_this_day
 from .vessel import insert_into_vessel
 
 
@@ -20,6 +20,9 @@ class Entry:
 
     def insert_daily_entry(self, **kwargs):
         return insert_into_day(self.conn, kwargs)
+
+    def update_total_distance_daily_entry(self, current_date):
+        return update_total_distance_this_day(self.conn, current_date)
 
     def insert_hourly_entry(self, **kwargs):
         return insert_into_hour(self.conn, kwargs)

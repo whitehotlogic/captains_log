@@ -17,14 +17,14 @@ def insert_into_vessel(conn, kwargs):
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO vessel VALUES(
-                :name, :hull_number, :uscg_number,
+                :id, :name, :hull_number, :uscg_number,
                 :fuel_capacity, :water_capacity,
                 :battery_capacity, :engine_manufacturer, :engine_number,
                 :owner_name, :owner_certification_agency,
                 :owner_certification_number
             )
         """, {
-            "name": name, "hull_number": hull_number,
+            "id": None, "name": name, "hull_number": hull_number,
             "uscg_number": uscg_number, "fuel_capacity": fuel_capacity,
             "water_capacity": water_capacity,
             "battery_capacity": battery_capacity,
