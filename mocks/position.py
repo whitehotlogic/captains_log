@@ -2,8 +2,6 @@ import geopy
 import geopy.distance
 import random
 
-EARTH_RADIUS = 6378.1  # Radius of the Earth
-
 
 def get_fake_speed():
     """Returns an arbitrary speed integer, representing knots"""
@@ -77,11 +75,10 @@ def get_fake_position(
     if last_direction is None:
         new_direction = get_fake_direction()
     else:
-        new_direction = get_fake_direction(last_direction=direction)
+        new_direction = get_fake_direction(last_direction=last_direction)
 
     if last_latitude is not None and last_longitude is not None:
         distance_traveled = new_speed * 1.852  # distance in km, from nm
-
         start = geopy.Point(last_latitude, last_longitude)
         distance = geopy.distance.VincentyDistance(
             kilometers=distance_traveled)
@@ -102,22 +99,6 @@ def get_fake_position(
 
 POSITION = {  # example call: POSITION["lat_long"](last_direction=75)
     "lat_lon": get_fake_position,
-    "speed": get_fake_speed
+    "speed": get_fake_speed,
+    "direction": get_fake_direction
 }
-
-direction = 215
-position = None
-latitude = 37.781400
-longitude = -122.514760
-for i in range(1000):
-    speed = get_fake_speed()
-    if (type(position) == dict and "latitude" in position and
-            "longitude" in position):
-        latitude = position["latitude"]
-        longitude = position["longitude"]
-    direction = get_fake_direction(last_direction=direction)
-    new_position = get_fake_position(
-        last_latitude=latitude, last_longitude=longitude,
-        speed=speed, last_direction=direction)
-    position = new_position
-    print(str(new_position["latitude"]) + "," + str(new_position["longitude"]))
