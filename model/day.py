@@ -14,7 +14,7 @@ def insert_into_day(conn, kwargs):
     with conn:
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO data VALUES(
+            INSERT INTO day VALUES(
                 :vessel, :date, :port_of_call_start,
                 :port_of_call_end, :total_distance_this_day,
                 :high_tide, :low_tide, :skipper

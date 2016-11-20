@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def insert_into_hour(self, kwargs):
+def insert_into_hour(conn, kwargs):
     vessel = kwargs.get("vessel", None)
     day = 1  # TODO: select day id based on vessel and current date
     current_time = datetime.now().time()
@@ -19,10 +19,10 @@ def insert_into_hour(self, kwargs):
         "distance_since_last_entry", None)
     notes = " | ".join(kwargs.get("notes", []))
 
-    with self.conn:
-        cur = self.conn.cursor()
+    with conn:
+        cur = conn.cursor()
         cur.execute("""
-            INSERT INTO data VALUES(
+            INSERT INTO hour VALUES(
                 :vessel, :day, :time,
                 :port_of_call_end, :total_distance_this_day,
                 :high_tide, :low_tide, :skipper

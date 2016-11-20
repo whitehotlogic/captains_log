@@ -80,8 +80,7 @@ def create_database(conn):
                 fuel_level INTEGER,
                 water_level INTEGER,
                 visibility INTEGER,
-                distance_since_last_entry NUMERIC,
-                notes INTEGER
+                distance_since_last_entry NUMERIC
             );
         """)
         cur.execute("""
@@ -132,4 +131,30 @@ def create_database(conn):
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                 note TEXT
             );
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS hour_notes (
+                notes_id INTEGER UNIQUE NOT NULL,
+                hour_id INTEGER NOT NULL
+            );
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_notes_notes_id_asc
+                ON hour_notes (notes_id ASC);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_notes_notes_id_desc
+                ON hour_notes (notes_id DESC);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_notes_hour_id_asc
+                ON hour_notes (hour_id ASC);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_notes_hour_id_desc
+                ON hour_notes (hour_id DESC);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_notes_hour_id_notes_id
+                ON hour_notes (hour_id, notes_id);
         """)
