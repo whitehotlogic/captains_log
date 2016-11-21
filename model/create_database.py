@@ -76,10 +76,10 @@ def create_database(conn):
                 weather TEXT,
                 wind_speed INTEGER,
                 wind_direction TEXT,
+                visibility INTEGER,
                 engine_hours INTEGER,
                 fuel_level INTEGER,
                 water_level INTEGER,
-                visibility INTEGER,
                 distance_since_last_entry NUMERIC
             );
         """)

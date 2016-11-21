@@ -14,16 +14,15 @@ def insert_into_hour(conn, kwargs):
     else:
         current_time = datetime.now().time()
     course = kwargs.get("course", None)
-    speed = kwargs.get("speed", None)
     latitude = kwargs.get("latitude", None)
     longitude = kwargs.get("longitude", None)
     weather = kwargs.get("weather", None)
     wind_speed = kwargs.get("wind_speed", None)
     wind_direction = kwargs.get("wind_direction", None)
+    visibility = kwargs.get("visibility", None)
     engine_hours = kwargs.get("engine_hours", None)
     fuel_level = kwargs.get("fuel_level", None)
     water_level = kwargs.get("water_level", None)
-    visibility = kwargs.get("visibility", None)
 
     with conn:
         cur = conn.cursor()
@@ -47,11 +46,12 @@ def insert_into_hour(conn, kwargs):
                 (latitude, longitude)).miles * 0.868976
         else:
             distance_since_last_entry = 0
+        speed = int(round(distance_since_last_entry))
         cur.execute("""
             INSERT INTO hour VALUES(
                 :id, :day_id, :time, :course, :speed, :latitude,
                 :longitude, :weather, :wind_speed, :wind_direction,
-                :engine_hours, :fuel_level, :water_level, :visibility,
+                :visibility, :engine_hours, :fuel_level, :water_level,
                 :distance_since_last_entry
             );
         """, {
