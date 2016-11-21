@@ -3,10 +3,39 @@ import geopy.distance
 import random
 
 
-def get_fake_speed():
+def get_fake_speed(last_speed=None):
     """Returns an arbitrary speed integer, representing knots"""
+    new_speed = 0
 
-    return random.randint(0, 8)
+    if last_speed is not None:
+        deviation = 0
+        chance_of_large_deviation = random.randint(1, 15)
+
+        if chance_of_large_deviation < 75:
+            deviation = random.randint(0, 1)
+        else:  # deviation is large
+            deviation = random.randint(0, 4)
+
+        deviation_is_positive = bool(random.getrandbits(1))
+
+        if deviation_is_positive:
+
+            if last_speed + deviation <= 8:
+                new_speed = last_speed + deviation
+            else:  # result is higher than 359 degrees
+                new_speed = 8
+
+        else:  # deviation will be negative
+
+            if last_speed - deviation >= 0:
+                new_speed = last_speed - deviation
+            else:  # result is lower than 0 degrees
+                new_speed = 0
+
+    else:
+        new_speed = random.randint(0, 8)
+
+    return new_speed
 
 
 def get_fake_direction(last_direction=None):
@@ -32,7 +61,7 @@ def get_fake_direction(last_direction=None):
 
         deviation_is_positive = bool(random.getrandbits(1))
 
-        if deviation_is_positive:
+        if deviation_is_positive:  # deviation will be clockwise
 
             if last_direction + deviation <= 359:
                 new_direction = last_direction + deviation
@@ -68,7 +97,10 @@ def get_fake_position(
     new_direction = 0
 
     if speed is None:
-        new_speed = get_fake_speed()
+        if last_latitude is None and last_longitude is None:
+            new_speed = get_fake_speed(last_speed=random.randint(3, 8))
+        else:
+            new_speed = get_fake_speed()
     else:  # speed was provided, do not create fake
         new_speed = speed
 
