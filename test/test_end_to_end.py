@@ -4,6 +4,7 @@ import unittest
 import config
 from datetime import date, timedelta
 from mocks.position import POSITION as MOCK_POSITION
+from mocks.weather import WEATHER as MOCK_WEATHER
 import shutil
 
 if os.path.isfile("config/config.py") is not True:
@@ -48,16 +49,21 @@ class TestDatabase(unittest.TestCase):
         # os.remove("test.db")
 
     def test_create_false_entries(self):
-        print("    Creating entries...")
-        Entry(db_name="test.db").init_database()
+
+        DAYS_TO_SIMULATE = 100
+
+        print("    Creating entries for {0} days...".format(DAYS_TO_SIMULATE))
 
         direction = 215  # southwest
         position = None
+        wind_speed = None
+        wind_direction = None
+        visibility = None
         latitude, longitude = 37.781400, -122.514760  # San Francisco
 
-        for day in range(10):
+        for day in range(DAYS_TO_SIMULATE):  # create hourly entry
             for hour in range(24):
-                if hour == 0:
+                if hour == 0:  # create daily entry
                     Entry(db_name="test.db").insert_daily_entry(
                         vessel=config.config.CONFIG["vessel_name"],
                         date=date.today() + timedelta(days=day),
@@ -66,10 +72,18 @@ class TestDatabase(unittest.TestCase):
                 speed = MOCK_POSITION["speed"]()
                 direction = MOCK_POSITION["direction"](
                     last_direction=direction)
+                wind_speed = MOCK_WEATHER["wind_speed"](
+                    last_wind_speed=wind_speed)
+                wind_direction = MOCK_WEATHER["wind_direction"](
+                    last_wind_direction=wind_direction)
+                visibility = MOCK_WEATHER["visibility"](
+                    last_visibility=visibility)
                 Entry(db_name="test.db").insert_hourly_entry(
                     time=hour, latitude=latitude,
-                    longitude=longitude, course=direction, speed=speed,
-                    date=date.today() + timedelta(days=day)
+                    longitude=longitude, course=direction,
+                    date=date.today() + timedelta(days=day),
+                    wind_speed=wind_speed, wind_direction=wind_direction,
+                    visibility=visibility
                 )
                 new_position = MOCK_POSITION["lat_lon"](
                     last_latitude=latitude, last_longitude=longitude,
@@ -78,12 +92,9 @@ class TestDatabase(unittest.TestCase):
                 latitude = position["latitude"]
                 longitude = position["longitude"]
 
-        for day in range(10):
+        for day in range(DAYS_TO_SIMULATE):  # update total distance each day
             Entry(db_name="test.db").update_total_distance_daily_entry(
                         date.today() + timedelta(days=day))
-
-
-
 
 
 if __name__ == '__main__':
