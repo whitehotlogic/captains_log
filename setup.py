@@ -15,7 +15,7 @@ def run_setup():
             if type(EXAMPLE_CONFIG[key]) == int:
                 response = int(response)
         except ValueError:
-            print("An integer value must be supplied. Try again: ")
+            print("An number value must be supplied. Try again: ")
             return get_response(key)
         NEW_CONFIG[key] = response
 
