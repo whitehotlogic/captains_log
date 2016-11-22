@@ -1,22 +1,22 @@
+import config
 import os
+import shutil
 import sys
 import unittest
-import config
 from datetime import date, timedelta
-from mocks.position import POSITION as MOCK_POSITION
-from mocks.weather import WEATHER as MOCK_WEATHER
-import shutil
 
 if os.path.isfile("config/config.py") is not True:
     shutil.copyfile("config/config_example.py", "config/config.py")
     reload(config)
-
 
 try:
     from model.entry import Entry
 except ImportError:
     sys.path.append("..")
     from model.entry import Entry
+
+from mocks.position import POSITION as MOCK_POSITION  # isort:skip # noqa: E402
+from mocks.weather import WEATHER as MOCK_WEATHER  # isort:skip # noqa: E402
 
 
 class TestDatabase(unittest.TestCase):
@@ -41,8 +41,7 @@ class TestDatabase(unittest.TestCase):
             owner_certification_agency=config.config.CONFIG[
                 "owner_certification_agency"],
             owner_certification_number=config.config.CONFIG[
-                "owner_certification_number"]
-        )
+                "owner_certification_number"], engine_type="diesel")
 
     def tearDown(self):
         pass
@@ -67,8 +66,7 @@ class TestDatabase(unittest.TestCase):
                     Entry(db_name="test.db").insert_daily_entry(
                         vessel=config.config.CONFIG["vessel_name"],
                         date=date.today() + timedelta(days=day),
-                        skipper="Skipper Name", time=hour
-                    )
+                        skipper="Skipper Name", time=hour)
                 speed = MOCK_POSITION["speed"]()
                 direction = MOCK_POSITION["direction"](
                     last_direction=direction)
@@ -83,8 +81,7 @@ class TestDatabase(unittest.TestCase):
                     longitude=longitude, course=direction,
                     date=date.today() + timedelta(days=day),
                     wind_speed=wind_speed, wind_direction=wind_direction,
-                    visibility=visibility
-                )
+                    visibility=visibility)
                 new_position = MOCK_POSITION["lat_lon"](
                     last_latitude=latitude, last_longitude=longitude,
                     speed=speed, last_direction=direction)
@@ -94,7 +91,7 @@ class TestDatabase(unittest.TestCase):
 
         for day in range(DAYS_TO_SIMULATE):  # update total distance each day
             Entry(db_name="test.db").update_total_distance_daily_entry(
-                        date.today() + timedelta(days=day))
+                date.today() + timedelta(days=day))
 
 
 if __name__ == '__main__':
