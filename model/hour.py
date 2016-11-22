@@ -4,6 +4,21 @@ from datetime import date, datetime
 from geopy.distance import vincenty
 
 
+def select_all_from_hour_with_id(conn, id):
+    with conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT day_id, time, course, latitude, longitude, weather,
+                wind_speed, wind_direction, visibility, engine_hours,
+                fuel_level, water_level, distance_since_last_entry
+                FROM hour
+                    WHERE id = ?
+        """, [id])
+        hour_data = cur.fetchone()
+
+        return hour_data
+
+
 def insert_into_hour(conn, kwargs):
     if "date" in kwargs:
         current_date = kwargs["date"]

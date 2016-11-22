@@ -1,3 +1,19 @@
+def select_all_from_vessel_with_id(conn, id):
+    with conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT name, hull_number, uscg_number, fuel_capacity,
+                water_capacity, battery_capacity, engine_manufacturer,
+                engine_number, engine_type, owner_name,
+                owner_certification_agency, owner_certification_number
+                FROM vessel
+                    WHERE id = ?
+        """, [id])
+        vessel_data = cur.fetchone()
+
+        return vessel_data
+
+
 def insert_into_vessel(conn, kwargs):
     name = kwargs.get("name", None)
     hull_number = kwargs.get("hull_number", None)

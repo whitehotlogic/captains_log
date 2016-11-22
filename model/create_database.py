@@ -80,7 +80,7 @@ def create_database(conn, test=False):
                 longitude INTEGER,
                 weather TEXT,
                 wind_speed INTEGER,
-                wind_direction TEXT,
+                wind_direction INTEGER,
                 visibility INTEGER,
                 engine_hours INTEGER,
                 fuel_level NUMERIC,

@@ -4,14 +4,28 @@ from datetime import date
 from geopy.distance import vincenty
 
 
-def daily_entry_exists(conn, current_date, vessel_name):
+def select_all_from_day_with_id(conn, id):
+    with conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT vessel_id, date, port_of_call_start, port_of_call_end,
+                total_distance_this_day, high_tide, low_tide, skipper
+                FROM day
+                    WHERE id = ?
+        """, [id])
+        vessel_data = cur.fetchone()
+
+        return vessel_data
+
+
+def check_if_daily_entry_exists(conn, current_date, vessel_name):
     with conn:
         cur = conn.cursor()
         cur.execute("""
             SELECT id FROM day WHERE date = ?
         """, [str(current_date)])
         daily_entry = cur.fetchone()
-        
+
         return daily_entry
 
 
@@ -23,8 +37,8 @@ def insert_into_day(conn, kwargs):
 
     port_of_call_start = kwargs.get("port_of_call_start", None)
     port_of_call_end = kwargs.get("port_of_call_end", None)
-    high_tide = 1  # TODO: get from data source
-    low_tide = 1  # TODO: get from data source
+    high_tide = kwargs.get("high_tide", None)
+    low_tide = kwargs.get("low_tide", None)
     skipper = kwargs.get("skipper", None)
 
     with conn:

@@ -2,9 +2,10 @@ import sqlite3
 
 from .create_database import create_database
 from .day import (check_if_daily_entry_exists, insert_into_day,
-                  update_total_distance_this_day)
-from .hour import insert_into_hour
-from .vessel import insert_into_vessel
+                  update_total_distance_this_day, select_all_from_day_with_id)
+from .hour import insert_into_hour, select_all_from_hour_with_id
+from .vessel import insert_into_vessel, select_all_from_vessel_with_id
+from .general import select_count_from_table
 
 
 class Entry:
@@ -31,3 +32,15 @@ class Entry:
     def daily_entry_exists(self, current_date, vessel_name):
         return check_if_daily_entry_exists(
             self.conn, current_date, vessel_name)
+
+    def get_vessel_info(self, id):
+        return select_all_from_vessel_with_id(self.conn, id)
+
+    def get_day_info(self, id):
+        return select_all_from_day_with_id(self.conn, id)
+
+    def get_hour_info(self, id):
+        return select_all_from_hour_with_id(self.conn, id)
+
+    def get_count_from_table(self, table_name):
+        return select_count_from_table(self.conn, table_name)
