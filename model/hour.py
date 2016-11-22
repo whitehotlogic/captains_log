@@ -27,23 +27,28 @@ def insert_into_hour(conn, kwargs):
     with conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT id FROM day WHERE date = ?
-                AND vessel_id = (
-                    SELECT id FROM vessel WHERE name = ?);
+            SELECT day.id FROM day
+                INNER JOIN vessel ON
+                    vessel.id = day.vessel_id
+                WHERE day.date = ? AND vessel.name = ?;
         """, [str(current_date), CONFIG["vessel_name"]])
         day_id = cur.fetchone()[0]
         cur.execute("""
-            SELECT latitude, longitude FROM hour
-                WHERE day_id = ? AND (SELECT id FROM vessel WHERE name = ?)
-                    AND latitude IS NOT NULL AND longitude IS NOT NULL
-                        ORDER BY id DESC LIMIT 1;
-        """, [day_id, CONFIG["vessel_name"]])
+            SELECT hour.latitude, hour.longitude FROM hour
+                INNER JOIN day ON
+                    day.id = hour.day_id
+                INNER JOIN vessel ON
+                    vessel.id = day.vessel_id
+                WHERE day.date = ? AND vessel.name = ?
+                ORDER BY hour.id DESC
+                LIMIT 1;
+        """, [str(current_date), CONFIG["vessel_name"]])
         coordinates_at_last_entry = cur.fetchone()
         if coordinates_at_last_entry is not None:
             distance_since_last_entry = vincenty(
                 (coordinates_at_last_entry[0],
                  coordinates_at_last_entry[1]),
-                (latitude, longitude)).miles * 0.868976
+                (latitude, longitude)).miles * 0.868976  # nm, from miles
         else:
             distance_since_last_entry = 0
         speed = int(round(distance_since_last_entry))

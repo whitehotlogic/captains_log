@@ -1,8 +1,9 @@
 import sqlite3
 
 from .create_database import create_database
+from .day import (check_if_daily_entry_exists, insert_into_day,
+                  update_total_distance_this_day)
 from .hour import insert_into_hour
-from .day import insert_into_day, update_total_distance_this_day
 from .vessel import insert_into_vessel
 
 
@@ -26,3 +27,7 @@ class Entry:
 
     def insert_hourly_entry(self, **kwargs):
         return insert_into_hour(self.conn, kwargs)
+
+    def daily_entry_exists(self, current_date, vessel_name):
+        return check_if_daily_entry_exists(
+            self.conn, current_date, vessel_name)

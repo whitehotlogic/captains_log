@@ -1,6 +1,10 @@
-def create_database(conn):
+def create_database(conn, test=False):
     with conn:
         cur = conn.cursor()
+        if test is True:
+            cur.execute("""
+                PRAGMA synchronous = 0
+            """)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS vessel (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -12,6 +16,7 @@ def create_database(conn):
                 battery_capacity INTEGER NOT NULL,
                 engine_manufacturer TEXT,
                 engine_number INTEGER,
+                engine_type TEXT,
                 owner_name TEXT NOT NULL,
                 owner_certification_agency TEXT,
                 owner_certification_number TEXT
@@ -78,8 +83,8 @@ def create_database(conn):
                 wind_direction TEXT,
                 visibility INTEGER,
                 engine_hours INTEGER,
-                fuel_level INTEGER,
-                water_level INTEGER,
+                fuel_level NUMERIC,
+                water_level NUMERIC,
                 distance_since_last_entry NUMERIC
             );
         """)

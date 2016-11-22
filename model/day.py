@@ -4,6 +4,17 @@ from datetime import date
 from geopy.distance import vincenty
 
 
+def daily_entry_exists(conn, current_date, vessel_name):
+    with conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id FROM day WHERE date = ?
+        """, [str(current_date)])
+        daily_entry = cur.fetchone()
+        
+        return daily_entry
+
+
 def insert_into_day(conn, kwargs):
     if "date" in kwargs:
         current_date = kwargs["date"]
@@ -46,9 +57,10 @@ def update_total_distance_this_day(conn, current_date):
         """, [CONFIG["vessel_name"]])
         vessel_id = cur.fetchone()[0]
         cur.execute("""
-            SELECT latitude, longitude FROM hour WHERE day_id = (
-                SELECT id FROM day WHERE date = ?
-            )
+            SELECT hour.latitude, hour.longitude FROM hour
+                INNER JOIN day ON
+                    day.id = hour.day_id
+                WHERE day.date = ?
         """, [current_date])
         coordinates_this_day = cur.fetchall()
         if len(coordinates_this_day) == 0:
@@ -59,7 +71,7 @@ def update_total_distance_this_day(conn, current_date):
                  coordinates_this_day[0][1]),
                 (coordinates_this_day[len(coordinates_this_day) - 1][0],
                  coordinates_this_day[len(coordinates_this_day) - 1][1])
-                ).miles * 0.868976
+            ).miles * 0.868976  # nm from miles
         cur.execute("""
             UPDATE day SET total_distance_this_day = ?
                 WHERE date = ? and vessel_id = ?;

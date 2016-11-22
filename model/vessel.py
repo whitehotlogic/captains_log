@@ -7,6 +7,7 @@ def insert_into_vessel(conn, kwargs):
     battery_capacity = kwargs.get("battery_capacity", None)
     engine_manufacturer = kwargs.get("engine_manufacturer", None)
     engine_number = kwargs.get("engine_number", None)
+    engine_type = kwargs.get("engine_type", None)
     owner_name = kwargs.get("owner_name", None)
     owner_certification_agency = kwargs.get(
         "owner_certification_agency", None)
@@ -20,7 +21,7 @@ def insert_into_vessel(conn, kwargs):
                 :id, :name, :hull_number, :uscg_number,
                 :fuel_capacity, :water_capacity,
                 :battery_capacity, :engine_manufacturer, :engine_number,
-                :owner_name, :owner_certification_agency,
+                :engine_type, :owner_name, :owner_certification_agency,
                 :owner_certification_number
             )
         """, {
@@ -29,7 +30,8 @@ def insert_into_vessel(conn, kwargs):
             "water_capacity": water_capacity,
             "battery_capacity": battery_capacity,
             "engine_manufacturer": engine_manufacturer,
-            "engine_number": engine_number, "owner_name": owner_name,
+            "engine_type": engine_type, "engine_number": engine_number,
+            "owner_name": owner_name,
             "owner_certification_agency": owner_certification_agency,
             "owner_certification_number": owner_certification_number
         })
