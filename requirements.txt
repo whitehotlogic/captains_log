@@ -2,3 +2,4 @@ geopy==1.11.0
 numpy==1.11.2
 pytides==0.0.4
 scipy==0.18.1
+schedule==0.3.2
