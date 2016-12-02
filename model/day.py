@@ -26,7 +26,12 @@ def check_if_daily_entry_exists(conn, current_date, vessel_name):
         """, [str(current_date)])
         daily_entry = cur.fetchone()
 
-        return daily_entry
+        print("DAILY ENTRY EXISTS", daily_entry)
+
+        if daily_entry is None:
+            return False
+        else:
+            return True
 
 
 def insert_into_day(conn, kwargs):

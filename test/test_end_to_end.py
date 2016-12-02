@@ -4,12 +4,9 @@ import shutil
 import sys
 import unittest
 from datetime import date, timedelta
-from unittest.runner import TextTestResult
 
 from mocks.position import POSITION as MOCK_POSITION
 from mocks.weather import WEATHER as MOCK_WEATHER
-
-TextTestResult.getDescription = lambda _, test: test.shortDescription()
 
 if os.path.isfile("config/config.py") is not True:
     shutil.copyfile("config/config_example.py", "config/config.py")
@@ -55,7 +52,8 @@ class TestDatabase(unittest.TestCase):
             owner_certification_number=config.config.CONFIG[
                 "owner_certification_number"], engine_type="diesel")
 
-        """    Creating entries for {0} days...""".format(DAYS_TO_SIMULATE)
+        print("""    Creating entries for {0} days...""".format(
+            DAYS_TO_SIMULATE))
 
         direction = 215  # southwest
         position = None
@@ -105,6 +103,7 @@ class TestDatabase(unittest.TestCase):
         # os.remove("test.db")
 
     def test_number_of_records(self):
+        print("    Test number of records in database")
         number_of_vessels = Entry(db_name="test.db").get_count_from_table(
             "vessel")
 
@@ -189,7 +188,6 @@ class TestDatabase(unittest.TestCase):
         fuel_level = hour_info[10]
         water_level = hour_info[11]
         distance_since_last_entry = hour_info[12]
-
         self.assertEqual(type(day_id), int)
         self.assertEqual(type(current_time), int)
         self.assertEqual(type(course), int)
