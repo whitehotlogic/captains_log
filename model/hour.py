@@ -38,6 +38,9 @@ def insert_into_hour(conn, kwargs):
     engine_hours = kwargs.get("engine_hours", None)
     fuel_level = kwargs.get("fuel_level", None)
     water_level = kwargs.get("water_level", None)
+    temperature = kwargs.get("temperature", None)
+    air_pressure = kwargs.get("air_pressure", None)
+    humidity = kwargs.get("humidity", None)
 
     with conn:
         cur = conn.cursor()
@@ -72,6 +75,7 @@ def insert_into_hour(conn, kwargs):
                 :id, :day_id, :time, :course, :speed, :latitude,
                 :longitude, :weather, :wind_speed, :wind_direction,
                 :visibility, :engine_hours, :fuel_level, :water_level,
+                :temperature, :air_pressure, :humidity,
                 :distance_since_last_entry
             );
         """, {
@@ -81,5 +85,7 @@ def insert_into_hour(conn, kwargs):
             "wind_speed": wind_speed, "wind_direction": wind_direction,
             "engine_hours": engine_hours, "fuel_level": fuel_level,
             "water_level": water_level, "visibility": visibility,
+            "temperature": temperature, "air_pressure": air_pressure,
+            "humidity": humidity,
             "distance_since_last_entry": distance_since_last_entry
         })

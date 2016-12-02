@@ -85,6 +85,9 @@ def create_database(conn, test=False):
                 engine_hours INTEGER,
                 fuel_level NUMERIC,
                 water_level NUMERIC,
+                temperature NUMERIC,
+                air_pressure NUMERIC,
+                humidity NUMERIC,
                 distance_since_last_entry NUMERIC
             );
         """)
@@ -125,7 +128,19 @@ def create_database(conn, test=False):
                 ON hour (visibility);
         """)
         cur.execute("""
-            CREATE INDEX IF NOT EXISTS hour_distance_since_last_entry
+            CREATE INDEX IF NOT EXISTS hour_temperature
+                ON hour (temperature);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_air_pressure
+                ON hour (air_pressure);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_humidity
+                ON hour (humidity);
+        """)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS hour_distance_since_last_entr
                 ON hour (distance_since_last_entry);
         """)
         cur.execute("""
