@@ -5,8 +5,8 @@ import sys
 import unittest
 from datetime import date, timedelta
 
-from mocks.position import POSITION as MOCK_POSITION
-from mocks.weather import WEATHER as MOCK_WEATHER
+from mocks.position import FakePosition
+from mocks.weather import FakeWeather
 
 if os.path.isfile("config/config.py") is not True:
     shutil.copyfile("config/config_example.py", "config/config.py")
@@ -71,14 +71,16 @@ class TestDatabase(unittest.TestCase):
                         skipper="Skipper Name", time=hour,
                         port_of_call_start="START", port_of_call_end="END",
                         high_tide=0.1, low_tide=1.1)
-                speed = MOCK_POSITION["speed"]()
-                direction = MOCK_POSITION["direction"](
+                fake_position = FakePosition()
+                fake_weather = FakeWeather()
+                speed = fake_position.speed()
+                direction = fake_position.direction(
                     last_direction=direction)
-                wind_speed = MOCK_WEATHER["wind_speed"](
+                wind_speed = fake_weather.wind_speed(
                     last_wind_speed=wind_speed)
-                wind_direction = MOCK_WEATHER["wind_direction"](
+                wind_direction = fake_weather.wind_direction(
                     last_wind_direction=wind_direction)
-                visibility = MOCK_WEATHER["visibility"](
+                visibility = fake_weather.visibility(
                     last_visibility=visibility)
                 Entry(db_name="test.db").insert_hourly_entry(
                     time=hour, latitude=latitude,
@@ -86,7 +88,7 @@ class TestDatabase(unittest.TestCase):
                     date=date.today() + timedelta(days=day),
                     wind_speed=wind_speed, wind_direction=wind_direction,
                     visibility=visibility)
-                new_position = MOCK_POSITION["lat_lon"](
+                new_position = fake_position.position(
                     last_latitude=latitude, last_longitude=longitude,
                     speed=speed, last_direction=direction)
                 position = new_position
