@@ -13,9 +13,9 @@ def select_all_from_day_with_id(conn, id):
                 FROM day
                     WHERE id = ?
         """, [id])
-        vessel_data = cur.fetchone()
+        day_data = cur.fetchone()
 
-        return vessel_data
+        return day_data
 
 
 def check_if_daily_entry_exists(conn, current_date, vessel_name):
