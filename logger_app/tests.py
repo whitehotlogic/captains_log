@@ -1,26 +1,25 @@
-import config
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.test import TestCase
+
+# Create your tests here.
 import os
 import shutil
-import sys
 import unittest
+from config import config
 from datetime import date, timedelta
 from unittest.runner import TextTestResult
 
 from mocks.position import POSITION as MOCK_POSITION
 from mocks.weather import WEATHER as MOCK_WEATHER
+from model.entry import Entry
 
 TextTestResult.getDescription = lambda _, test: test.shortDescription()
 
 if os.path.isfile("config/config.py") is not True:
     shutil.copyfile("config/config_example.py", "config/config.py")
     reload(config)
-
-try:
-    from model.entry import Entry
-except ImportError:
-    sys.path.append("..")
-    from model.entry import Entry
-
 
 try:
     unicode
@@ -41,18 +40,18 @@ class TestDatabase(unittest.TestCase):
         print("Database created")
         print("Creating vessel entry...")
         Entry(db_name="test.db").insert_vessel_info(
-            name=config.config.CONFIG["vessel_name"],
-            hull_number=config.config.CONFIG["hull_number"],
-            uscg_number=config.config.CONFIG["uscg_number"],
-            fuel_capacity=config.config.CONFIG["fuel_capacity"],
-            water_capacity=config.config.CONFIG["water_capacity"],
-            battery_capacity=config.config.CONFIG["battery_capacity"],
-            engine_manufacturer=config.config.CONFIG["engine_manufacturer"],
-            engine_number=config.config.CONFIG["engine_number"],
-            owner_name=config.config.CONFIG["owner_name"],
-            owner_certification_agency=config.config.CONFIG[
+            name=config.CONFIG["vessel_name"],
+            hull_number=config.CONFIG["hull_number"],
+            uscg_number=config.CONFIG["uscg_number"],
+            fuel_capacity=config.CONFIG["fuel_capacity"],
+            water_capacity=config.CONFIG["water_capacity"],
+            battery_capacity=config.CONFIG["battery_capacity"],
+            engine_manufacturer=config.CONFIG["engine_manufacturer"],
+            engine_number=config.CONFIG["engine_number"],
+            owner_name=config.CONFIG["owner_name"],
+            owner_certification_agency=config.CONFIG[
                 "owner_certification_agency"],
-            owner_certification_number=config.config.CONFIG[
+            owner_certification_number=config.CONFIG[
                 "owner_certification_number"], engine_type="diesel")
 
         """    Creating entries for {0} days...""".format(DAYS_TO_SIMULATE)
@@ -68,7 +67,7 @@ class TestDatabase(unittest.TestCase):
             for hour in range(24):
                 if hour == 0:  # create daily entry
                     Entry(db_name="test.db").insert_daily_entry(
-                        vessel=config.config.CONFIG["vessel_name"],
+                        vessel=config.CONFIG["vessel_name"],
                         date=date.today() + timedelta(days=day),
                         skipper="Skipper Name", time=hour,
                         port_of_call_start="START", port_of_call_end="END",
@@ -206,7 +205,3 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual(type(distance_since_last_entry), int)
         else:  # sqlite stores 0.0 as 0
             self.assertEqual(type(distance_since_last_entry), float)
-
-
-if __name__ == '__main__':
-    unittest.main()
