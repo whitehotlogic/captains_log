@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import pdb
+from collections import OrderedDict
+
 from logger_app import serializers
-from rest_framework.decorators import detail_route, list_route
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import mixins
+from rest_framework.viewsets import ModelViewSet
+from rest_framework_extensions.mixins import NestedViewSetMixin
+
 from .filters import DayFilter, HourFilter, PortOfCallFilter, VesselFilter
 from .models import Day, Hour, Note, PortOfCall, Vessel
-from rest_framework_extensions.mixins import NestedViewSetMixin
-from .pagination import DateResultsSetPagination
-import itertools
+
 
 class VesselViewSet(NestedViewSetMixin, ModelViewSet):
     """
@@ -75,27 +77,43 @@ class DateViewSet(NestedViewSetMixin, ModelViewSet):
 
 class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
     """
-    API endpoint that allows days to be viewed or edited.
+    API endpoint that shows a detail view of a day, associated with a vessel,
+    and a list view of the hours associated with that day.
     """
-    day_queryset = Day.objects.all()
+    queryset = Day.objects.all()
     serializer_class = serializers.DateHourSerializer
     lookup_field = 'vessel'
     # filter_class = DayFilter
 
-    def get_queryset(self):
+    def retrieve(self, request, *args, **kwargs):
+        # pdb.set_trace()
         print vars(self)
         vessel = Vessel.objects.get(pk=self.kwargs['vessel'])
-        day_queryset = Day.objects.get(
-            date=self.kwargs['date'], vessel=vessel)
+        try:
+            day_queryset = Day.objects.get(
+                date=self.kwargs['date'], vessel=vessel)
+        except Day.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         hour_queryset = Hour.objects.filter(day=day_queryset)
         self.kwargs['pk'] = day_queryset.id
         # hour_queryset.pk = day_queryset.id
         hour_queryset.day = day_queryset
         # print vars(hour_queryset)
-        hour_serializer = serializers.HourSerializer(
+        day_serializer = serializers.DayDetailSerializer(
+            day_queryset, context={'request': self.request}
+        )
+        hour_serializer = serializers.DateHourSerializer(
             hour_queryset, context={'request': self.request}, many=True)
-        print hour_serializer
-        return hour_serializer
+        day_detail = day_serializer.data
+        hours = OrderedDict((
+            ('count', len(hour_serializer.data)),
+            ('next', None),
+            ('previous', None),
+            ('results', hour_serializer.data)
+        ))
+        day_detail['hours'] = hours
+        print hours
+        return Response(day_detail)
 
 
 class HourViewSet(NestedViewSetMixin, ModelViewSet):

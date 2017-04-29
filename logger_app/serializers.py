@@ -118,12 +118,11 @@ class HourSerializer(
 
 class DateHourSerializer(
         PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
-    day = DayDetailSerializer()
 
     class Meta:
         model = Hour
         fields = (
-            "id", "url", "day", "time", "course", "speed", "latitude",
+            "id", "url", "time", "course", "speed", "latitude",
             "longitude", "weather", "wind_speed", "wind_direction",
             "visibility", "engine_hours", "fuel_level", "water_level",
             "distance_since_last_entry", "created_at", "updated_at"
