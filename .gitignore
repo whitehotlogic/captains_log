@@ -2,6 +2,10 @@
 # $GIT_DIR/info/exclude or the core.excludesFile configuration variable as
 # described in https://git-scm.com/docs/gitignore
 
+#------------#
+# DJANGO APP #
+#------------#
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -103,3 +107,48 @@ ENV/
 
 # database
 db.sqlite3
+
+#------------#
+# CLIENT APP #
+#------------#
+
+# compiled output
+/client-app/dist
+/client-app/tmp
+/client-app/out-tsc
+
+# dependencies
+/client-app/node_modules/
+
+# IDEs and editors
+/client-app/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/client-app/.sass-cache
+/client-app/connect.lock
+/client-app/coverage
+/client-app/libpeerconnection.log
+npm-debug.log
+testem.log
+/client-app/typings
+
+# e2e
+/client-app/e2e/*.js
+/client-app/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
