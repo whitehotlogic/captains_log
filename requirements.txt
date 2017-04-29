@@ -3,9 +3,13 @@ Django==1.11
 django-crispy-forms==1.6.1
 django-filter==1.0.2
 djangorestframework==3.6.2
+drf-extensions==0.3.1
+drf-nested-routers==0.90.0
 geopy==1.11.0
+numpy==1.12.1
 packaging==16.8
 pyparsing==2.2.0
 pytz==2017.2
 schedule==0.4.2
 six==1.10.0
+timezonefinder==2.0.1
