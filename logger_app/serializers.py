@@ -40,7 +40,7 @@ class PortOfCallNestedSerializer(
         PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = Vessel
+        model = PortOfCall
         fields = ("id", "url")
 
 
@@ -73,11 +73,11 @@ class DayListSerializer(
 
 
 class DayCreateSerializer(
-        PartialUpdateSerializerMixin, serializers.ModelSerializer):
+        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
     vessel = serializers.PrimaryKeyRelatedField(
         queryset=Vessel.objects.all())
     port_of_call = serializers.PrimaryKeyRelatedField(
-        queryset=PortOfCall.objects.all())
+        queryset=PortOfCall.objects.all(), required=False, allow_null=True)
     date = serializers.DateField()
 
     def create(self, validated_data):
@@ -85,7 +85,6 @@ class DayCreateSerializer(
         Create and return a new `Day` instance, given the validated data.
         """
         date_entry = validated_data.pop('date', None)
-        print date_entry
         if date_entry is not None:
             validated_data['date'] = date_entry
         return Day.objects.create(**validated_data)
@@ -112,7 +111,8 @@ class HourSerializer(
             "id", "url", "day", "time", "course", "speed", "latitude",
             "longitude", "weather", "wind_speed", "wind_direction",
             "visibility", "engine_hours", "fuel_level", "water_level",
-            "distance_since_last_entry", "created_at", "updated_at"
+            "distance_since_last_entry", "timezone",
+            "created_at", "updated_at"
         )
 
 
@@ -125,7 +125,8 @@ class DateHourSerializer(
             "id", "url", "time", "course", "speed", "latitude",
             "longitude", "weather", "wind_speed", "wind_direction",
             "visibility", "engine_hours", "fuel_level", "water_level",
-            "distance_since_last_entry", "created_at", "updated_at"
+            "distance_since_last_entry", "timezone",
+            "created_at", "updated_at"
         )
 
 

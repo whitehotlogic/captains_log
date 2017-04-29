@@ -100,6 +100,7 @@ class Hour(models.Model):
     fuel_level = models.FloatField()
     water_level = models.FloatField()
     distance_since_last_entry = models.FloatField(null=False)
+    timezone = models.CharField(max_length=100, default='UTC', null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

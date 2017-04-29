@@ -10,12 +10,15 @@ from geopy.distance import vincenty
 from .models import Day, Hour, Vessel, PortOfCall
 from .sensors import Sensors
 
+from timezonefinder import TimezoneFinder
+
 logger = logging.getLogger('captains_log')
 
 
 class LoggerJob(object):
 
     def __init__(self):
+        self.timezone_finder = TimezoneFinder()
         self.sensor_array = Sensors(mock=True)
         try:
             self.vessel = Vessel.objects.latest(field_name="created_at")
@@ -58,12 +61,16 @@ class LoggerJob(object):
             vars(self.sensor_array)))
 
     def create_daily_entry(self, today):
+        try:
+            port_of_call = PortOfCall.objects.latest(
+                field_name="created_at")
+        except PortOfCall.DoesNotExist:
+            port_of_call = None
         current_day = Day.objects.create(
             vessel=self.vessel,
             date=today,
             total_distance_this_day=0,
-            port_of_call=PortOfCall.objects.latest(
-                field_name="created_at"),
+            port_of_call=port_of_call,
             high_tide=213.4,
             low_tide=212.4,
             skipper="Shane"
@@ -75,13 +82,22 @@ class LoggerJob(object):
 
     def create_hourly_entry(
             self, current_day, hour, old_latitude, old_longitude):
+        latitude = self.sensor_array.latitude
+        longitude = self.sensor_array.longitude
+        try:
+            timezone = self.timezone_finder.timezone_at(
+                lat=latitude, lng=longitude)
+            if timezone is None:
+                timezone = "UTC"
+        except ValueError:
+            timezone = "UTC"
         hourly_entry = Hour.objects.create(
             day=current_day,
             time=hour,
             course=self.sensor_array.course,
             speed=self.sensor_array.speed,
-            latitude=self.sensor_array.latitude,
-            longitude=self.sensor_array.longitude,
+            latitude=latitude,
+            longitude=longitude,
             weather="clear",
             wind_speed=self.sensor_array.wind_speed,
             wind_direction=self.sensor_array.wind_direction,
@@ -91,7 +107,8 @@ class LoggerJob(object):
             water_level=self.sensor_array.water_level,
             distance_since_last_entry=self.distance_since_last_entry(
                 old_latitude, old_longitude
-            )
+            ),
+            timezone=timezone
         )
         logger.debug("Hourly entry created - {0}".format(vars(hourly_entry)))
         logger.info("Hourly entry created - {0}".format(str(hourly_entry)))

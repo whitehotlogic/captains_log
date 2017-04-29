@@ -37,7 +37,6 @@ class DayViewSet(NestedViewSetMixin, ModelViewSet):
     API endpoint that allows days to be viewed or edited.
     """
     queryset = Day.objects.all()
-    serializer_class = serializers.DayListSerializer
     filter_class = DayFilter
 
     def get_serializer_class(self):
@@ -46,6 +45,8 @@ class DayViewSet(NestedViewSetMixin, ModelViewSet):
         if self.action == 'retrieve':
             return serializers.DayDetailSerializer
         if self.action == 'create':
+            return serializers.DayCreateSerializer
+        if self.action == 'update':
             return serializers.DayCreateSerializer
         return serializers.DayListSerializer
 
