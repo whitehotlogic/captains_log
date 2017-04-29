@@ -20,12 +20,12 @@ class LoggerJob(object):
         try:
             self.vessel = Vessel.objects.latest(field_name="created_at")
         except Vessel.DoesNotExist as error:
-            logger.warning("LoggerJob __init__ - {0}".format(error))
+            logger.debug("LoggerJob __init__ - {0}".format(error))
         try:
             most_recent_day = Day.objects.filter(
                 vessel=self.vessel).latest('created_at')
         except (AttributeError, Day.DoesNotExist) as error:
-            logger.info(
+            logger.warning(
                 "Previous Day not found. One will be created "
                 "at the beginning of the next hour if a vessel is defined "
                 "at POST /vessel/"
@@ -138,7 +138,7 @@ class LoggerJob(object):
 
     def initiate_hourly_entries(self):
         # # FIXME: below line
-        schedule.every(1).minutes.do(self.job, 5)
+        # schedule.every(1).minutes.do(self.job, 5)
         for hour in range(24):  # 0, 23
             hour_string = str(hour)
             if len(hour_string) == 1:

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from django.db import models
 
 
@@ -31,6 +33,7 @@ class Vessel(models.Model):
             models.Index(fields=['owner_name']),
             models.Index(fields=['created_at']),
         ]
+        get_latest_by = 'created_at'
 
 
 class PortOfCall(models.Model):
@@ -51,13 +54,14 @@ class PortOfCall(models.Model):
             models.Index(fields=['latitude', 'longitude']),
             models.Index(fields=['created_at']),
         ]
+        get_latest_by = 'created_at'
 
 
 class Day(models.Model):
     vessel = models.ForeignKey(Vessel, null=False)
     port_of_call = models.ForeignKey(PortOfCall, null=True)
-    date = models.DateField(null=False, blank=False, auto_now_add=True)
-    total_distance_this_day = models.FloatField()
+    date = models.DateField(null=False, blank=False)
+    total_distance_this_day = models.FloatField(default=0.0)
     high_tide = models.FloatField()
     low_tide = models.FloatField()
     skipper = models.CharField(max_length=255)
@@ -65,9 +69,9 @@ class Day(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{0} - {1}:{2}, skippered by {3}'.format(
+        return '{0} - {1}:{2}, skippered by {3} on {4}'.format(
             self.vessel.name, self.vessel.owner_certification_agency,
-            self.vessel.owner_certification_number, self.skipper
+            self.vessel.owner_certification_number, self.skipper, self.date
         )
 
     class Meta:
@@ -78,6 +82,7 @@ class Day(models.Model):
             models.Index(fields=['skipper']),
             models.Index(fields=['created_at']),
         ]
+        get_latest_by = 'created_at'
 
 
 class Hour(models.Model):
@@ -99,9 +104,13 @@ class Hour(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{0} - {1}:{2}'.format(
+        time_tuple = (
+            self.day.date.year, self.day.date.month, self.day.date.day,
+            self.time)
+        datetime_object = datetime(*time_tuple)
+        return '{0} - {1}:{2} at {3}'.format(
             self.day.vessel.name, self.day.vessel.owner_certification_agency,
-            self.day.vessel.owner_certification_number
+            self.day.vessel.owner_certification_number, datetime_object
         )
 
     class Meta:
@@ -118,6 +127,7 @@ class Hour(models.Model):
             models.Index(fields=['distance_since_last_entry']),
             models.Index(fields=['created_at']),
         ]
+        get_latest_by = 'created_at'
 
 
 class Note(models.Model):
@@ -133,3 +143,4 @@ class Note(models.Model):
             models.Index(fields=['timestamp']),
             models.Index(fields=['created_at']),
         ]
+        get_latest_by = 'created_at'
