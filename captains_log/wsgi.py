@@ -7,10 +7,14 @@ For more information on this file, see
 https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/
 """
 
+
 import os
 
-from django.core.wsgi import get_wsgi_application
 from logger_app.logger import LoggerJob
+from django.core.wsgi import get_wsgi_application
+from captains_log.logging_config import set_up_logging
+
+set_up_logging()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "captains_log.settings")
 
