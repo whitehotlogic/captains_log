@@ -1,10 +1,9 @@
 from django_filters import rest_framework as filters
 from django_filters import widgets
-from .models import Day, Vessel, Hour
+from .models import Day, Vessel, Hour, PortOfCall
 
 
 class VesselFilter(filters.FilterSet):
-    created_at = date_range = filters.DateFromToRangeFilter(widget=widgets.RangeWidget(attrs={'placeholder': 'YYYY-MM-DD'}))
 
     class Meta:
         model = Vessel
@@ -15,14 +14,21 @@ class VesselFilter(filters.FilterSet):
         ]
 
 
+class PortOfCallFilter(filters.FilterSet):
+
+    class Meta:
+        model = PortOfCall
+        fields = [
+            'name', 'latitude', 'longitude', 'created_at'
+        ]
+
+
 class DayFilter(filters.FilterSet):
-    created_at = filters.IsoDateTimeFilter()
 
     class Meta:
         model = Day
         fields = [
-            'vessel_id', 'date', 'port_of_call_start', 'port_of_call_end',
-            'skipper', 'created_at'
+            'vessel_id', 'date', 'skipper', 'created_at'
         ]
 
 

@@ -19,6 +19,9 @@ class Vessel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return '{0}, owned by {1}'.format(self.name, self.owner_name)
+
     class Meta:
         indexes = [
             models.Index(fields=['name']),
@@ -30,11 +33,30 @@ class Vessel(models.Model):
         ]
 
 
+class PortOfCall(models.Model):
+    name = models.CharField(max_length=255)
+    latitude = models.FloatField(null=False)
+    longitude = models.FloatField(null=False)
+    notes = models.CharField(max_length=1024, default='', null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{0} at ({1}, {2})'.format(
+            self.name, self.latitude, self.longitude)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['latitude', 'longitude']),
+            models.Index(fields=['created_at']),
+        ]
+
+
 class Day(models.Model):
     vessel = models.ForeignKey(Vessel, null=False)
+    port_of_call = models.ForeignKey(PortOfCall, null=True)
     date = models.DateField(null=False, blank=False, auto_now_add=True)
-    port_of_call_start = models.CharField(max_length=255)
-    port_of_call_end = models.CharField(max_length=255)
     total_distance_this_day = models.FloatField()
     high_tide = models.FloatField()
     low_tide = models.FloatField()
@@ -42,11 +64,17 @@ class Day(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return '{0} - {1}:{2}, skippered by {3}'.format(
+            self.vessel.name, self.vessel.owner_certification_agency,
+            self.vessel.owner_certification_number, self.skipper
+        )
+
     class Meta:
         indexes = [
             models.Index(fields=['vessel']),
             models.Index(fields=['date']),
-            models.Index(fields=['port_of_call_start', 'port_of_call_end']),
+            models.Index(fields=['port_of_call']),
             models.Index(fields=['skipper']),
             models.Index(fields=['created_at']),
         ]
@@ -70,6 +98,12 @@ class Hour(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return '{0} - {1}:{2}'.format(
+            self.day.vessel.name, self.day.vessel.owner_certification_agency,
+            self.day.vessel.owner_certification_number
+        )
+
     class Meta:
         indexes = [
             models.Index(fields=['day']),
@@ -89,7 +123,7 @@ class Hour(models.Model):
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, null=False)
     vessel = models.ForeignKey(Vessel, null=False)
-    note = models.CharField(max_length=1024)
+    note = models.CharField(max_length=1024, default='', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

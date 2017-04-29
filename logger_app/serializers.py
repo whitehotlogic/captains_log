@@ -1,4 +1,4 @@
-from models import Vessel, Day, Hour, Note
+from models import Vessel, Day, Hour, Note, PortOfCall
 from rest_framework import serializers
 
 
@@ -6,6 +6,13 @@ class VesselSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vessel
+        fields = "__all__"
+
+
+class PortOfCallSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = PortOfCall
         fields = "__all__"
 
 
