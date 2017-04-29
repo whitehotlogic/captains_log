@@ -33,8 +33,8 @@ class Sensors:
                 speed=self.speed, last_direction=self.course,
                 last_latitude=self.latitude, last_longitude=self.longitude
             )
-            self.latitude = lat_lon['latitude']
-            self.longitude = lat_lon['longitude']
+            self.latitude = lat_lon["latitude"]
+            self.longitude = lat_lon["longitude"]
 
     def get_weather(self):
         if self.mock:

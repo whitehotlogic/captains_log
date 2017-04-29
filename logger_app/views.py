@@ -61,7 +61,6 @@ class DateViewSet(NestedViewSetMixin, ModelViewSet):
     filter_class = DayFilter
 
     def get_queryset(self):
-        print vars(self)
         vessel = Vessel.objects.get(pk=self.kwargs['vessel'])
         queryset = Day.objects.filter(date=self.kwargs['date'], vessel=vessel)
         return queryset
@@ -83,12 +82,9 @@ class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
     """
     queryset = Day.objects.all()
     serializer_class = serializers.DateHourSerializer
-    lookup_field = 'vessel'
-    # filter_class = DayFilter
 
     def retrieve(self, request, *args, **kwargs):
         # pdb.set_trace()
-        print vars(self)
         vessel = Vessel.objects.get(pk=self.kwargs['vessel'])
         try:
             day_queryset = Day.objects.get(
@@ -97,9 +93,7 @@ class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         hour_queryset = Hour.objects.filter(day=day_queryset)
         self.kwargs['pk'] = day_queryset.id
-        # hour_queryset.pk = day_queryset.id
         hour_queryset.day = day_queryset
-        # print vars(hour_queryset)
         day_serializer = serializers.DayDetailSerializer(
             day_queryset, context={'request': self.request}
         )
@@ -113,7 +107,6 @@ class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
             ('results', hour_serializer.data)
         ))
         day_detail['hours'] = hours
-        print hours
         return Response(day_detail)
 
 

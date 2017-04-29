@@ -14,9 +14,9 @@ def set_up_logging():
     logging.addLevelName(
         logging.ERROR, "\033[1;41m{0}\033[1;0m".format(
             logging.getLevelName(logging.ERROR)))
-    logger = logging.getLogger('captains_log')
-    logging.Formatter(fmt='%(asctime)s.%(msecs)03d',
-                      datefmt='%Y-%m-%d,%H:%M:%S')
+    logger = logging.getLogger("captains_log")
+    logging.Formatter(fmt="%(asctime)s.%(msecs)03d",
+                      datefmt="%Y-%m-%d,%H:%M:%S")
     logger.setLevel(logging.DEBUG)  # change to INFO for explicit logs
     ch = logging.StreamHandler()
     formatter = logging.Formatter(

@@ -22,39 +22,39 @@ class Vessel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{0}, owned by {1}'.format(self.name, self.owner_name)
+        return "{0}, owned by {1}".format(self.name, self.owner_name)
 
     class Meta:
         indexes = [
-            models.Index(fields=['name']),
-            models.Index(fields=['hull_number']),
-            models.Index(fields=['owner_certification_agency']),
-            models.Index(fields=['owner_certification_number']),
-            models.Index(fields=['owner_name']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=["name"]),
+            models.Index(fields=["hull_number"]),
+            models.Index(fields=["owner_certification_agency"]),
+            models.Index(fields=["owner_certification_number"]),
+            models.Index(fields=["owner_name"]),
+            models.Index(fields=["created_at"]),
         ]
-        get_latest_by = 'created_at'
+        get_latest_by = "created_at"
 
 
 class PortOfCall(models.Model):
     name = models.CharField(max_length=255)
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
-    notes = models.CharField(max_length=1024, default='', null=False)
+    notes = models.CharField(max_length=1024, default="", null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{0} at ({1}, {2})'.format(
+        return "{0} at ({1}, {2})".format(
             self.name, self.latitude, self.longitude)
 
     class Meta:
         indexes = [
-            models.Index(fields=['name']),
-            models.Index(fields=['latitude', 'longitude']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=["name"]),
+            models.Index(fields=["latitude", "longitude"]),
+            models.Index(fields=["created_at"]),
         ]
-        get_latest_by = 'created_at'
+        get_latest_by = "created_at"
 
 
 class Day(models.Model):
@@ -69,20 +69,20 @@ class Day(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{0} - {1}:{2}, skippered by {3} on {4}'.format(
+        return "{0} - {1}:{2}, skippered by {3} on {4}".format(
             self.vessel.name, self.vessel.owner_certification_agency,
             self.vessel.owner_certification_number, self.skipper, self.date
         )
 
     class Meta:
         indexes = [
-            models.Index(fields=['vessel']),
-            models.Index(fields=['date']),
-            models.Index(fields=['port_of_call']),
-            models.Index(fields=['skipper']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=["vessel"]),
+            models.Index(fields=["date"]),
+            models.Index(fields=["port_of_call"]),
+            models.Index(fields=["skipper"]),
+            models.Index(fields=["created_at"]),
         ]
-        get_latest_by = 'created_at'
+        get_latest_by = "created_at"
 
 
 class Hour(models.Model):
@@ -100,7 +100,7 @@ class Hour(models.Model):
     fuel_level = models.FloatField()
     water_level = models.FloatField()
     distance_since_last_entry = models.FloatField(null=False)
-    timezone = models.CharField(max_length=100, default='UTC', null=False)
+    timezone = models.CharField(max_length=100, default="UTC", null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -109,39 +109,39 @@ class Hour(models.Model):
             self.day.date.year, self.day.date.month, self.day.date.day,
             self.time)
         datetime_object = datetime(*time_tuple)
-        return '{0} - {1}:{2} at {3}'.format(
+        return "{0} - {1}:{2} at {3}".format(
             self.day.vessel.name, self.day.vessel.owner_certification_agency,
             self.day.vessel.owner_certification_number, datetime_object
         )
 
     class Meta:
         indexes = [
-            models.Index(fields=['day']),
-            models.Index(fields=['time']),
-            models.Index(fields=['latitude', 'longitude']),
-            models.Index(fields=['weather']),
-            models.Index(fields=['wind_speed', 'wind_direction']),
-            models.Index(fields=['engine_hours']),
-            models.Index(fields=['fuel_level']),
-            models.Index(fields=['water_level']),
-            models.Index(fields=['visibility']),
-            models.Index(fields=['distance_since_last_entry']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=["day"]),
+            models.Index(fields=["time"]),
+            models.Index(fields=["latitude", "longitude"]),
+            models.Index(fields=["weather"]),
+            models.Index(fields=["wind_speed", "wind_direction"]),
+            models.Index(fields=["engine_hours"]),
+            models.Index(fields=["fuel_level"]),
+            models.Index(fields=["water_level"]),
+            models.Index(fields=["visibility"]),
+            models.Index(fields=["distance_since_last_entry"]),
+            models.Index(fields=["created_at"]),
         ]
-        get_latest_by = 'created_at'
+        get_latest_by = "created_at"
 
 
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, null=False)
     vessel = models.ForeignKey(Vessel, null=False)
-    note = models.CharField(max_length=1024, default='', null=True)
+    note = models.CharField(max_length=1024, default="", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [
-            models.Index(fields=['note']),
-            models.Index(fields=['timestamp']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=["note"]),
+            models.Index(fields=["timestamp"]),
+            models.Index(fields=["created_at"]),
         ]
-        get_latest_by = 'created_at'
+        get_latest_by = "created_at"

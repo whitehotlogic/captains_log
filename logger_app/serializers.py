@@ -84,9 +84,9 @@ class DayCreateSerializer(
         """
         Create and return a new `Day` instance, given the validated data.
         """
-        date_entry = validated_data.pop('date', None)
+        date_entry = validated_data.pop("date", None)
         if date_entry is not None:
-            validated_data['date'] = date_entry
+            validated_data["date"] = date_entry
         return Day.objects.create(**validated_data)
 
     class Meta:
@@ -99,7 +99,7 @@ class DateSerializer(
 
     class Meta:
         model = Day
-        fields = ('url', 'date')
+        fields = ("url", "date")
 
 
 class HourSerializer(

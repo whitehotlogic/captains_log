@@ -12,7 +12,7 @@ from .sensors import Sensors
 
 from timezonefinder import TimezoneFinder
 
-logger = logging.getLogger('captains_log')
+logger = logging.getLogger("captains_log")
 
 
 class LoggerJob(object):
@@ -26,7 +26,7 @@ class LoggerJob(object):
             logger.debug("LoggerJob __init__ - {0}".format(error))
         try:
             most_recent_day = Day.objects.filter(
-                vessel=self.vessel).latest('created_at')
+                vessel=self.vessel).latest("created_at")
         except (AttributeError, Day.DoesNotExist) as error:
             logger.warning(
                 "Previous Day not found. One will be created "
@@ -35,7 +35,7 @@ class LoggerJob(object):
             )
         try:
             previous_entry = Hour.objects.filter(
-                day=most_recent_day).latest('created_at')
+                day=most_recent_day).latest("created_at")
             self.update_sensor_array_by_previous_entry(previous_entry)
 
         except (UnboundLocalError, Hour.DoesNotExist) as error:
