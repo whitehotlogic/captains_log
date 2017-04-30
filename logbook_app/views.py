@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import pdb
 from collections import OrderedDict
 
 from logbook_app import serializers
@@ -17,6 +16,7 @@ from .models import Day, Hour, Note, PortOfCall, Vessel
 class VesselViewSet(NestedViewSetMixin, ModelViewSet):
     """
     API endpoint that allows vessels to be viewed or edited.
+    All measurements are in feet/gallons.
     """
     queryset = Vessel.objects.all()
     serializer_class = serializers.VesselSerializer

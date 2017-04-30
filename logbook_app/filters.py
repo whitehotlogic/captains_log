@@ -1,5 +1,4 @@
 from django_filters import rest_framework as filters
-from django_filters import widgets
 from .models import Day, Vessel, Hour, PortOfCall
 
 
@@ -8,9 +7,10 @@ class VesselFilter(filters.FilterSet):
     class Meta:
         model = Vessel
         fields = [
-            "name", "owner_name", "hull_number", "engine_manufacturer",
-            "engine_number", "engine_type", "owner_certification_agency",
-            "owner_certification_number", "created_at"
+            "name", "owner_name", "manufacturer", "model", "hull_number",
+            "engine_manufacturer", "engine_number", "engine_type",
+            "owner_certification_agency", "owner_certification_number",
+            "created_at"
         ]
 
 

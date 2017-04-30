@@ -12,11 +12,11 @@ class VesselSerializer(
     class Meta:
         model = Vessel
         fields = (
-            "id", "url", "name", "hull_number", "fuel_capacity",
-            "water_capacity", "battery_capacity", "engine_manufacturer",
-            "engine_number", "engine_type", "owner_name",
-            "owner_certification_agency", "owner_certification_number",
-            "created_at", "updated_at"
+            "id", "url", "name", "manufacturer", "length", "draft", "model",
+            "hull_number", "fuel_capacity", "water_capacity",
+            "battery_capacity", "engine_manufacturer", "engine_number",
+            "engine_type", "owner_name", "owner_certification_agency",
+            "owner_certification_number", "created_at", "updated_at"
         )
 
 

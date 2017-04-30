@@ -8,6 +8,10 @@ from django.db import models
 
 class Vessel(models.Model):
     name = models.CharField(max_length=255, null=False)
+    model = models.CharField(max_length=100, null=True)
+    manufacturer = models.CharField(max_length=100, null=True)
+    length = models.FloatField(null=False)
+    draft = models.FloatField(null=False)
     hull_number = models.CharField(max_length=255, null=False)
     fuel_capacity = models.FloatField(null=False)
     water_capacity = models.FloatField(null=False)
@@ -27,6 +31,8 @@ class Vessel(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["name"]),
+            models.Index(fields=["manufacturer"]),
+            models.Index(fields=["model"]),
             models.Index(fields=["hull_number"]),
             models.Index(fields=["owner_certification_agency"]),
             models.Index(fields=["owner_certification_number"]),
