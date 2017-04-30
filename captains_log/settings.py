@@ -150,4 +150,5 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.TemplateHTMLRenderer"
     ),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
 }

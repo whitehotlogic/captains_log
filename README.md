@@ -25,7 +25,7 @@ python manage.py migrate
 
 ### First Time Use
 
-Head to <http://127.0.0.1:8000/api/vessels> and make sure you at the very least create a vessel.
+Head to <http://127.0.0.1:8000> and make sure you at the very least create a vessel.
 
 ### Run
 

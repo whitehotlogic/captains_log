@@ -1,10 +1,13 @@
+from drf_queryfields import QueryFieldsMixin
 from models import Day, Hour, Note, PortOfCall, Vessel
-from rest_framework import serializers
+from rest_framework.serializers import (DateField, HyperlinkedModelSerializer,
+                                        PrimaryKeyRelatedField)
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
 
 
 class VesselSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
 
     class Meta:
         model = Vessel
@@ -18,7 +21,8 @@ class VesselSerializer(
 
 
 class PortOfCallSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
 
     class Meta:
         model = PortOfCall
@@ -29,7 +33,7 @@ class PortOfCallSerializer(
 
 
 class VesselNestedSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
 
     class Meta:
         model = Vessel
@@ -37,7 +41,7 @@ class VesselNestedSerializer(
 
 
 class PortOfCallNestedSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
 
     class Meta:
         model = PortOfCall
@@ -45,7 +49,7 @@ class PortOfCallNestedSerializer(
 
 
 class DayDetailSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
     vessel = VesselSerializer(read_only=True)
     port_of_call = PortOfCallSerializer(read_only=True)
 
@@ -59,7 +63,8 @@ class DayDetailSerializer(
 
 
 class DayListSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
     vessel = VesselNestedSerializer(read_only=True)
     port_of_call = PortOfCallNestedSerializer(read_only=True)
 
@@ -73,12 +78,12 @@ class DayListSerializer(
 
 
 class DayCreateSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
-    vessel = serializers.PrimaryKeyRelatedField(
+        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+    vessel = PrimaryKeyRelatedField(
         queryset=Vessel.objects.all())
-    port_of_call = serializers.PrimaryKeyRelatedField(
+    port_of_call = PrimaryKeyRelatedField(
         queryset=PortOfCall.objects.all(), required=False, allow_null=True)
-    date = serializers.DateField()
+    date = DateField()
 
     def create(self, validated_data):
         """
@@ -95,7 +100,7 @@ class DayCreateSerializer(
 
 
 class DateSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
 
     class Meta:
         model = Day
@@ -103,7 +108,8 @@ class DateSerializer(
 
 
 class HourSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
 
     class Meta:
         model = Hour
@@ -117,7 +123,8 @@ class HourSerializer(
 
 
 class DateHourSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
 
     class Meta:
         model = Hour
@@ -131,7 +138,8 @@ class DateHourSerializer(
 
 
 class NoteSerializer(
-        PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
 
     class Meta:
         model = Note

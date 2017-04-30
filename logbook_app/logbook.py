@@ -85,7 +85,7 @@ class LogbookJob(object):
         try:
             timezone = self.timezone_finder.timezone_at(
                 lat=latitude, lng=longitude)
-            if timezone is None:
+            if timezone is None or timezone == "uninhabited":
                 timezone = "UTC"
         except ValueError:
             timezone = "UTC"
