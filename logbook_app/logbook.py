@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 import logging
 import time
-from datetime import date
+from datetime import date, datetime, timedelta
 from threading import Thread
 
 import schedule
 from geopy.distance import vincenty
-
-from .models import Day, Hour, Vessel, PortOfCall
-from .sensors import Sensors
-
 from timezonefinder import TimezoneFinder
+
+from .models import Day, Hour, PortOfCall, Vessel
+from .sensors import Sensors
 
 logger = logging.getLogger("captains_log")
 
 
-class LoggerJob(object):
+class LogbookJob(object):
 
     def __init__(self):
         self.timezone_finder = TimezoneFinder()
@@ -35,9 +34,8 @@ class LoggerJob(object):
             )
         try:
             previous_entry = Hour.objects.filter(
-                day=most_recent_day).latest("created_at")
+                day=most_recent_day).latest()
             self.update_sensor_array_by_previous_entry(previous_entry)
-
         except (UnboundLocalError, Hour.DoesNotExist) as error:
             logger.info(
                 "Previous Hour entry not found. One will be created "
@@ -143,11 +141,15 @@ class LoggerJob(object):
             old_longitude = self.sensor_array.longitude
             self.sensor_array.update()
             today = date.today()
-            current_day = Day.objects.filter(date=today, vessel=self.vessel)
-            if len(current_day) < 1:
+            try:
+                current_day = Day.objects.get(date=today, vessel=self.vessel)
+            except Day.DoesNotExist:
                 current_day = self.create_daily_entry(today)
-            else:
-                current_day = current_day[0]
+            try:
+                previous_day = current_day.date - timedelta(days=1)
+                print previous_day
+            except Day.DoesNotExist:
+                pass
             self.create_hourly_entry(
                 current_day, hour, old_latitude, old_longitude)
         except Exception as error:

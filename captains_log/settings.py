@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "crispy_forms",
     "django_filters",
-    "logger_app",
+    "logbook_app",
 ]
 
 MIDDLEWARE = [

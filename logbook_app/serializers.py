@@ -132,7 +132,6 @@ class DateHourSerializer(
 
 class NoteSerializer(
         PartialUpdateSerializerMixin, serializers.HyperlinkedModelSerializer):
-    # vessel = VesselNestedSerializer()
 
     class Meta:
         model = Note

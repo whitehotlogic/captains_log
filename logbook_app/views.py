@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import pdb
 from collections import OrderedDict
 
-from logger_app import serializers
+from logbook_app import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet

@@ -1,9 +1,9 @@
 from django.conf.urls import url, include
 # from rest_framework import routers
 from rest_framework_nested import routers
-from logger_app import views
+from logbook_app import views
 
-app_name = "logger_app"
+app_name = "logbook_app"
 
 router = routers.DefaultRouter()
 

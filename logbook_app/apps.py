@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class LoggerAppConfig(AppConfig):
-    name = "logger_app"
+    name = "logbook_app"
