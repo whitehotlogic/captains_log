@@ -1,5 +1,4 @@
 import json
-import pdb
 
 from logbook_app.models import Day, Hour, PortOfCall, Vessel
 from rest_framework import status

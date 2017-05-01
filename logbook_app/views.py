@@ -98,16 +98,18 @@ class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
         day_serializer = serializers.DayDetailSerializer(
             day_queryset, context={'request': self.request}
         )
+        # import pdb
         hour_serializer = serializers.DateHourSerializer(
             hour_queryset, context={'request': self.request}, many=True)
-        day_detail = day_serializer.data
+        # pdb.set_trace()
+        day_detail = OrderedDict(day_serializer.data)
         hours = OrderedDict((
             ('count', len(hour_serializer.data)),
             ('next', None),
             ('previous', None),
             ('results', hour_serializer.data)
         ))
-        day_detail['hours'] = hours
+        day_detail["hours"] = hours
         return Response(day_detail)
 
 

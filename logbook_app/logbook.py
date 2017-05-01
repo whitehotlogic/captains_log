@@ -14,7 +14,7 @@ from .sensors import Sensors
 logger = logging.getLogger("captains_log")
 
 
-class LogbookJob(object):
+class Logbook(object):
 
     def __init__(self):
         self.timezone_finder = TimezoneFinder()

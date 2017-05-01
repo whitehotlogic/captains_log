@@ -1,12 +1,10 @@
 import json
-import pdb
 
-from logbook_app.models import Day, Hour, PortOfCall, Vessel
+from logbook_app.models import Day, PortOfCall, Vessel
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from .config.day_config import DAY_1, DAY_3
-from .config.hour_config import HOUR_SET_1
 from .config.portofcall_config import PORT_OF_CALL_1, PORT_OF_CALL_2
 from .config.vessel_config import VESSEL_1, VESSEL_2
 
