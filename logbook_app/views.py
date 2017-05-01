@@ -82,6 +82,7 @@ class DateHourViewSet(NestedViewSetMixin, ModelViewSet):
     """
     queryset = Day.objects.all()
     serializer_class = serializers.DateHourSerializer
+    pagination_class = None
 
     def retrieve(self, request, *args, **kwargs):
         # pdb.set_trace()

@@ -77,7 +77,7 @@ class VesselCreateTests(APITestCase):
         self.assertEqual(content["owner_name"], VESSEL_2["owner_name"])
 
 
-class VesselCheckByDate(APITestCase):
+class VesselCheckByDateTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -96,7 +96,7 @@ class VesselCheckByDate(APITestCase):
         HOUR_SET_1_TEMP = list(HOUR_SET_1)
         for hour in HOUR_SET_1_TEMP:
             hour["day"] = self.day_1
-            Hour(**hour).save()
+            Hour.objects.create(**hour)
         self.hour_set_1 = Hour.objects.filter(day=self.day_1)
 
     def tearDown(self):
