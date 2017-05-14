@@ -1,6 +1,7 @@
 from drf_queryfields import QueryFieldsMixin
 from models import Day, Hour, Note, PortOfCall, Vessel
 from rest_framework.serializers import (DateField, HyperlinkedModelSerializer,
+                                        ModelSerializer,
                                         PrimaryKeyRelatedField)
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
 
@@ -20,6 +21,21 @@ class VesselSerializer(
         )
 
 
+class VesselHistorySerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = Vessel
+        fields = (
+            "id", "name", "manufacturer", "length", "draft", "model",
+            "hull_number", "fuel_capacity", "water_capacity",
+            "battery_capacity", "engine_manufacturer", "engine_number",
+            "engine_type", "owner_name", "owner_certification_agency",
+            "owner_certification_number", "created_at", "updated_at"
+        )
+
+
 class PortOfCallSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         HyperlinkedModelSerializer):
@@ -28,6 +44,18 @@ class PortOfCallSerializer(
         model = PortOfCall
         fields = (
             "id", "url", "name", "latitude", "longitude", "notes",
+            "created_at", "updated_at"
+        )
+
+
+class PortOfCallHistorySerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = PortOfCall
+        fields = (
+            "id", "name", "latitude", "longitude", "notes",
             "created_at", "updated_at"
         )
 

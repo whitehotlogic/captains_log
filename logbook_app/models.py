@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 
 class Vessel(models.Model):
@@ -24,6 +25,7 @@ class Vessel(models.Model):
     owner_certification_number = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{0}, owned by {1}".format(self.name, self.owner_name)
@@ -49,6 +51,7 @@ class PortOfCall(models.Model):
     notes = models.CharField(max_length=1024, default="", null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{0} at ({1}, {2})".format(
