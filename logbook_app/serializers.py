@@ -1,9 +1,20 @@
 from drf_queryfields import QueryFieldsMixin
-from models import Day, Hour, Note, PortOfCall, Vessel
+from models import Crew, Day, Hour, Note, PortOfCall, Trip, Vessel
 from rest_framework.serializers import (DateField, HyperlinkedModelSerializer,
                                         ModelSerializer,
                                         PrimaryKeyRelatedField)
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
+
+
+class CrewSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
+
+        class Meta:
+            model = Crew
+            fields = (
+                "id", "url", "name", "can_skipper"
+            )
 
 
 class VesselSerializer(
@@ -16,8 +27,8 @@ class VesselSerializer(
             "id", "url", "name", "manufacturer", "length", "draft", "model",
             "hull_number", "fuel_capacity", "water_capacity",
             "battery_capacity", "engine_manufacturer", "engine_number",
-            "engine_type", "owner_name", "owner_certification_agency",
-            "owner_certification_number", "created_at", "updated_at"
+            "engine_type", "owner", "skipper", "owner_certification_agency",
+            "owner_certification_number", "image", "created_at", "updated_at"
         )
 
 
@@ -31,7 +42,7 @@ class VesselHistorySerializer(
             "id", "name", "manufacturer", "length", "draft", "model",
             "hull_number", "fuel_capacity", "water_capacity",
             "battery_capacity", "engine_manufacturer", "engine_number",
-            "engine_type", "owner_name", "owner_certification_agency",
+            "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "created_at", "updated_at"
         )
 
@@ -44,6 +55,19 @@ class PortOfCallSerializer(
         model = PortOfCall
         fields = (
             "id", "url", "name", "latitude", "longitude", "notes",
+            "created_at", "updated_at"
+        )
+
+
+class TripSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Trip
+        fields = (
+            "id", "url", "name", "vessels", "start_date", "end_date",
+            "starting_port", "stops", "destination_port",
             "created_at", "updated_at"
         )
 

@@ -4,13 +4,22 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from logbook_app import serializers
+from logbook_app.filters import (CrewFilter, DayFilter, HourFilter,
+                                 PortOfCallFilter, TripFilter, VesselFilter)
+from logbook_app.models import Crew, Day, Hour, Note, PortOfCall, Trip, Vessel
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from .filters import DayFilter, HourFilter, PortOfCallFilter, VesselFilter
-from .models import Day, Hour, Note, PortOfCall, Vessel
+
+class CrewViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that allows crew to be viewed or edited
+    """
+    queryset = Crew.objects.all()
+    serializer_class = serializers.CrewSerializer
+    filter_class = CrewFilter
 
 
 class VesselViewSet(NestedViewSetMixin, ModelViewSet):
@@ -30,6 +39,15 @@ class PortOfCallViewSet(NestedViewSetMixin, ModelViewSet):
     queryset = PortOfCall.objects.all()
     serializer_class = serializers.PortOfCallSerializer
     filter_class = PortOfCallFilter
+
+
+class TripViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that allows trips to be viewed or edited
+    """
+    queryset = Trip.objects.all()
+    serializer_class = serializers.TripSerializer
+    filter_class = TripFilter
 
 
 class DayViewSet(NestedViewSetMixin, ModelViewSet):

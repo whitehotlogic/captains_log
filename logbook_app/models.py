@@ -7,6 +7,17 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 
+class Crew(models.Model):
+    name = models.CharField(max_length=255, null=False)
+    can_skipper = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.can_skipper:
+            return "Skipper: {0}".format(self.name)
+        else:
+            return self.name
+
+
 class Vessel(models.Model):
     name = models.CharField(max_length=255, null=False)
     model = models.CharField(max_length=100, null=True)
@@ -17,18 +28,21 @@ class Vessel(models.Model):
     fuel_capacity = models.FloatField(null=False)
     water_capacity = models.FloatField(null=False)
     battery_capacity = models.FloatField(null=False)
-    engine_manufacturer = models.CharField(max_length=255)
-    engine_number = models.CharField(max_length=255)
-    engine_type = models.CharField(max_length=255)
-    owner_name = models.CharField(max_length=255)
+    engine_manufacturer = models.CharField(max_length=255, null=True)
+    engine_number = models.CharField(max_length=255, null=True)
+    engine_type = models.CharField(max_length=255, null=True)
+    owner = models.ForeignKey(Crew, null=False, related_name="vessel_owner")
+    skipper = models.OneToOneField(
+        Crew, null=False, related_name="vessel_skipper", db_column="skipper")
     owner_certification_agency = models.CharField(max_length=255)
     owner_certification_number = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(null=True)
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{0}, owned by {1}".format(self.name, self.owner_name)
+        return "{0}, owned by {1}".format(self.name, self.owner)
 
     class Meta:
         indexes = [
@@ -38,7 +52,7 @@ class Vessel(models.Model):
             models.Index(fields=["hull_number"]),
             models.Index(fields=["owner_certification_agency"]),
             models.Index(fields=["owner_certification_number"]),
-            models.Index(fields=["owner_name"]),
+            models.Index(fields=["owner"]),
             models.Index(fields=["created_at"]),
         ]
         get_latest_by = "created_at"
@@ -66,14 +80,41 @@ class PortOfCall(models.Model):
         get_latest_by = "created_at"
 
 
+class Trip(models.Model):
+    name = models.CharField(max_length=255)
+    vessels = models.ManyToManyField(Vessel)
+    start_date = models.DateTimeField(null=False)
+    end_date = models.DateTimeField(null=True)
+    starting_port = models.ForeignKey(
+        PortOfCall, null=False, related_name="trip_starting_port")
+    stops = models.ManyToManyField(PortOfCall, blank=True)
+    destination_port = models.ForeignKey(
+        PortOfCall, null=False, related_name="trip_destination_port")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{0}".format(self.name)
+
+    class Meta:
+        indexes = [
+
+        ]
+        unique_together = ("starting_port", "destination_port",)
+
+
 class Day(models.Model):
+    trip = models.ForeignKey(Trip, null=True)
     vessel = models.ForeignKey(Vessel, null=False)
     port_of_call = models.ForeignKey(PortOfCall, null=True)
     date = models.DateField(null=False, blank=False)
     total_distance_this_day = models.FloatField(default=0.0)
     high_tide = models.FloatField()
     low_tide = models.FloatField()
-    skipper = models.CharField(max_length=255)
+    skipper = models.OneToOneField(
+        Vessel, null=False, to_field="skipper",
+        related_name="day_skipper", unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -143,7 +184,7 @@ class Hour(models.Model):
 class Note(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, null=False)
     vessel = models.ForeignKey(Vessel, null=False)
-    note = models.CharField(max_length=1024, default="", null=True)
+    note = models.CharField(max_length=1024, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
