@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.views.generic.base import RedirectView
 from logbook_app import views
 from rest_framework_nested import routers
@@ -29,6 +30,7 @@ vessel_day_hour_router = routers.NestedSimpleRouter(
 vessel_day_hour_router.register(r"hours", views.HourViewSet, base_name="hours")
 
 urlpatterns = [
+    url(r'^logbook/admin/', admin.site.urls),
     url(r"^$", RedirectView.as_view(url='logbook/api/')),
     url(r"^logbook/api/", include(router.urls)),
     url(r"^logbook/api/", include(vessel_day_router.urls)),
@@ -38,6 +40,8 @@ urlpatterns = [
         views.DateHourViewSet.as_view({"get": "retrieve"})),
     url(r"^logbook/api/vessels/(?P<pk>[0-9]+)/history/$",
         views.VesselHistoryViewSet.as_view({"get": "list"})),
+    url(r"^logbook/api/supplies/(?P<pk>[0-9]+)/history/$",
+        views.SupplyHistoryViewSet.as_view({"get": "list"})),
     url(r"^logbook/api/portsofcall/(?P<pk>[0-9]+)/history/$",
         views.PortOfCallHistoryViewSet.as_view({"get": "list"})),
 ]
