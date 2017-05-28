@@ -35,7 +35,7 @@ class DayCreateTests(APITestCase):
         self.assertEqual(Crew.objects.count(), 3)
         self.assertEqual(CREW_1["is_active"], found_crew.is_active)
         self.assertEqual(CREW_1["can_skipper"], found_crew.can_skipper)
-        self.assertEqual(CREW_1["name"], found_crew.name)
+        self.assertEqual(CREW_1["crew_name"], found_crew.crew_name)
 
     def test_get_crew(self):
         """
@@ -47,9 +47,12 @@ class DayCreateTests(APITestCase):
 
         self.assertEqual(content["count"], 3)
         self.assertEqual(len(content["results"]), 3)
-        self.assertEqual(content["results"][0]["name"], CREW_1["name"])
-        self.assertEqual(content["results"][1]["name"], CREW_2["name"])
-        self.assertEqual(content["results"][2]["name"], CREW_3["name"])
-        self.assertEqual(self.crew_1_content["name"], CREW_1["name"])
-        self.assertEqual(self.crew_2_content["name"], CREW_2["name"])
-        self.assertEqual(self.crew_3_content["name"], CREW_3["name"])
+        self.assertEqual(
+            content["results"][0]["crew_name"], CREW_1["crew_name"])
+        self.assertEqual(
+            content["results"][1]["crew_name"], CREW_2["crew_name"])
+        self.assertEqual(
+            content["results"][2]["crew_name"], CREW_3["crew_name"])
+        self.assertEqual(self.crew_1_content["crew_name"], CREW_1["crew_name"])
+        self.assertEqual(self.crew_2_content["crew_name"], CREW_2["crew_name"])
+        self.assertEqual(self.crew_3_content["crew_name"], CREW_3["crew_name"])

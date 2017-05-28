@@ -73,6 +73,8 @@ class CrewCreateUpdateSerializer(
                     pass
         else:
             instance.crew_user = None
+        instance.crew_name = validated_data.get(
+            "crew_name", instance.crew_name)
         instance.can_skipper = validated_data.get(
             "can_skipper", instance.can_skipper)
         instance.is_active = validated_data.get(

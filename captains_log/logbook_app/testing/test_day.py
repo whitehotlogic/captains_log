@@ -52,7 +52,8 @@ class DayCreateTests(APITestCase):
         self.assertEqual(Day.objects.count(), 2)
         self.assertEqual(DAY_1["date"], str(found_day.date))
         self.assertEqual(DAY_1["port_of_call"], found_day.port_of_call.id)
-        self.assertEqual(self.vessel_1.name, found_day.vessel.name)
+        self.assertEqual(
+            self.vessel_1.vessel_name, found_day.vessel.vessel_name)
 
     def test_get_days(self):
         """

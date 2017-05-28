@@ -39,7 +39,7 @@ class VesselCreateTests(APITestCase):
         found_vessel = Vessel.objects.get(pk=self.vessel_1_content["id"])
         self.assertEqual(self.vessel_1.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Vessel.objects.count(), 2)
-        self.assertEqual(VESSEL_1["name"], found_vessel.name)
+        self.assertEqual(VESSEL_1["vessel_name"], found_vessel.vessel_name)
         self.assertEqual(
             VESSEL_1["hull_number"], found_vessel.hull_number)
 
@@ -132,7 +132,9 @@ class VesselCheckByDateTests(APITestCase):
         self.assertEqual(
             content["hours"]["results"][0]["time"], self.hour_set_1[0].time)
         self.assertEqual(
-            content["port_of_call"]["name"], self.day_1.port_of_call.name)
+            content["port_of_call"]["port_of_call_name"],
+            self.day_1.port_of_call.port_of_call_name
+        )
 
     def test_redirects_without_slash(self):
         response = self.client.get(

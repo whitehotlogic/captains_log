@@ -1,5 +1,5 @@
 VESSEL_1 = {
-    "name": "Outrun",
+    "vessel_name": "Outrun",
     "hull_number": "1234ABcd",
     "manufacturer": "Ericson",
     "model": "36C",
@@ -15,7 +15,7 @@ VESSEL_1 = {
 }
 
 VESSEL_2 = {
-    "name": "Nightcall",
+    "vessel_name": "Nightcall",
     "hull_number": "ABcd1234",
     "manufacturer": "Islander",
     "model": "36",
