@@ -1,8 +1,36 @@
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from models import Crew
 from rest_framework.exceptions import PermissionDenied
+
+
+class UserCreateUpdateSerializerMiddleware(object):
+
+    def create(self, validated_data):
+        return User.objects.create_user(
+            validated_data.get("username"),
+            validated_data.get("email"),
+            validated_data.get("password"),
+            first_name=validated_data.get("first_name"),
+            last_name=validated_data.get("last_name")
+        )
+
+    def update(self, instance, validated_data):
+        validated_data["current_password"] = validated_data.get(
+            "current_password")
+        if instance.check_password(validated_data["current_password"]):
+            if validated_data.get("new_password"):
+                instance.set_password(validated_data["new_password"])
+            instance.username = validated_data.get(
+                "username", instance.username)
+            instance.first_name = validated_data.get(
+                "first_name", instance.first_name)
+            instance.last_name = validated_data.get(
+                "last_name", instance.last_name)
+            instance.email = validated_data.get("email", instance.email)
+            instance.save()
+            return instance
+        else:
+            raise PermissionDenied("Incorrect credentials for User")
 
 
 class CrewCreateUpdateSerializerMiddleware(object):
@@ -69,6 +97,5 @@ class CrewCreateUpdateSerializerMiddleware(object):
             "can_skipper", instance.can_skipper)
         instance.is_active = validated_data.get(
             "is_active", instance.is_active)
-        instance.updated_at = datetime.now()
         instance.save()
         return instance

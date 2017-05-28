@@ -11,10 +11,27 @@ from captains_log.logbook_app.filters import (CrewFilter, DayFilter,
 from captains_log.logbook_app.models import (Crew, Day, Hour, Note, PortOfCall,
                                              Provision, Supply,
                                              SupplyProvision, Trip, Vessel)
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
+
+
+class UserViewSet(ModelViewSet):
+    """
+    API Endpoint for registering users
+    """
+    queryset = User.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return serializers.UserCreateSerializer
+        if self.action == "update":
+            return serializers.UserUpdateSerializer
+        if self.action == "partial_update":
+            return serializers.UserUpdateSerializer
+        return serializers.UserSerializer
 
 
 class CrewViewSet(NestedViewSetMixin, ModelViewSet):

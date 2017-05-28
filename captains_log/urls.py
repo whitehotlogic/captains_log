@@ -10,6 +10,7 @@ app_name = "logbook_app"
 
 router = routers.DefaultRouter()
 
+router.register(r"users", views.UserViewSet)
 router.register(r"crew", views.CrewViewSet)
 router.register(r"vessels", views.VesselViewSet)
 router.register(r"provisions", views.ProvisionViewSet)

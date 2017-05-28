@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User
 from drf_queryfields import QueryFieldsMixin
-from middleware import CrewCreateUpdateSerializerMiddleware
+from middleware import (CrewCreateUpdateSerializerMiddleware,
+                        UserCreateUpdateSerializerMiddleware)
 from models import (Crew, Day, Hour, Note, PortOfCall, Provision, Supply,
                     SupplyProvision, Trip, Vessel)
 from rest_framework.serializers import (CharField, DateField, ModelSerializer,
@@ -7,12 +9,57 @@ from rest_framework.serializers import (CharField, DateField, ModelSerializer,
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
 
 
+class UserCreateSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    def create(self, validated_data):
+        user = UserCreateUpdateSerializerMiddleware().create(validated_data)
+        user.password = None
+        return user
+
+    class Meta:
+        model = User
+        fields = (
+            "id", "username", "email", "first_name", "last_name", "password"
+        )
+
+
+class UserUpdateSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    old_password = CharField(default=None, max_length=128)
+    new_password = CharField(default=None, max_length=128)
+
+    def update(self, instance, validated_data):
+        return UserCreateUpdateSerializerMiddleware().update(
+            instance, validated_data)
+
+    class Meta:
+        model = User
+        fields = (
+            "id", "username", "email", "first_name", "last_name",
+            "current_password", "new_password"
+        )
+
+
+class UserSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "id", "username"
+        )
+
+
 class CrewCreateUpdateSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
-    crew_user_password = CharField(
-        default=None, max_length=128)
+    crew_user_password = CharField(default=None, max_length=128)
 
     def create(self, validated_data):
         return CrewCreateUpdateSerializerMiddleware().create(validated_data)
