@@ -48,8 +48,6 @@ class Logbook(object):
         self.sensor_array.longitude = previous_entry.longitude
         self.sensor_array.course = previous_entry.course
         self.sensor_array.speed = previous_entry.speed
-        self.sensor_array.fuel_level = previous_entry.fuel_level
-        self.sensor_array.water_level = previous_entry.water_level
         self.sensor_array.weather = previous_entry.weather
         self.sensor_array.wind_speed = previous_entry.wind_speed
         self.sensor_array.wind_direction = previous_entry.wind_direction
