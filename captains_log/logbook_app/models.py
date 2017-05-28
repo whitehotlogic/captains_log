@@ -18,7 +18,7 @@ class Crew(models.Model):
 
     def __str__(self):
         if self.can_skipper:
-            return "Skipper: {0}".format(self.name)
+            return "{0} (can skipper)".format(self.name)
         else:
             return self.name
 
@@ -58,7 +58,11 @@ class Vessel(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{0}, owned by {1}".format(self.name, self.owner)
+        if self.skipper is not None:
+            return "{0}, owned by {1}, current skipper: {2}".format(
+                self.name, self.owner, self.skipper.name)
+        else:
+            return "{0}, owned by {1}".format(self.name, self.owner)
 
     class Meta:
         indexes = [
@@ -189,7 +193,7 @@ class Day(models.Model):
     port_of_call = models.ForeignKey(PortOfCall, null=True)
     date = models.DateField(null=False, blank=False)
     total_distance_this_day = models.DecimalField(
-        max_digits=5, decimal_places=2, null=False,
+        max_digits=5, decimal_places=2, null=False, default=0.0,
         validators=[MinValueValidator(Decimal('0.00'))]
     )
     high_tide = models.DecimalField(max_digits=5, decimal_places=2, null=False)

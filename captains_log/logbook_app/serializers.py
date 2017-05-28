@@ -26,7 +26,7 @@ class VesselSerializer(
     class Meta:
         model = Vessel
         fields = (
-            "id", "name", "manufacturer", "length", "draft", "model",
+            "id", "name", "manufacturer", "model", "length", "draft",
             "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "image", "created_at", "updated_at"
@@ -40,7 +40,7 @@ class VesselHistorySerializer(
     class Meta:
         model = Vessel
         fields = (
-            "id", "name", "manufacturer", "length", "draft", "model",
+            "id", "name", "manufacturer",  "model", "length", "draft",
             "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "created_at", "updated_at"
