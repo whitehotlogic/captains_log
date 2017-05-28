@@ -70,8 +70,7 @@ class Logbook(object):
             total_distance_this_day=0,
             port_of_call=port_of_call,
             high_tide=213.4,
-            low_tide=212.4,
-            skipper="Shane"
+            low_tide=212.4
         )
         logger.debug("Daily entry created - {0}".format(vars(current_day)))
         logger.info("Daily entry created - {0}".format(str(current_day)))
@@ -101,8 +100,6 @@ class Logbook(object):
             wind_direction=self.sensor_array.wind_direction,
             visibility=self.sensor_array.visibility,
             engine_hours=self.sensor_array.engine_hours,
-            fuel_level=self.sensor_array.fuel_level,
-            water_level=self.sensor_array.water_level,
             distance_since_last_entry=self.distance_since_last_entry(
                 old_latitude, old_longitude
             ),

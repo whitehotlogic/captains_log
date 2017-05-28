@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "django_filters",
     'simple_history',
-    "logbook_app",
+    "captains_log.logbook_app",
 ]
 
 MIDDLEWARE = [

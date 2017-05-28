@@ -1,6 +1,7 @@
+from captains_log.logbook_app.models import (Crew, Day, Hour, PortOfCall,
+                                             Provision, Supply,
+                                             SupplyProvision, Trip, Vessel)
 from django_filters import rest_framework as filters
-
-from .models import Crew, Day, Hour, PortOfCall, Trip, Vessel
 
 
 class CrewFilter(filters.FilterSet):
@@ -21,6 +22,33 @@ class VesselFilter(filters.FilterSet):
             "engine_manufacturer", "engine_number", "engine_type",
             "owner_certification_agency", "owner_certification_number",
             "created_at"
+        ]
+
+
+class ProvisionFilter(filters.FilterSet):
+
+    class Meta:
+        model = Provision
+        fields = [
+            "name", "created_at", "updated_at"
+        ]
+
+
+class SupplyFilter(filters.FilterSet):
+
+    class Meta:
+        model = Supply
+        fields = [
+            "vessel", "fuel", "water", "battery"
+        ]
+
+
+class SupplyProvisionFilter(filters.Filter):
+
+    class Meta:
+        model = SupplyProvision
+        fields = [
+            "supply", "provision"
         ]
 
 
@@ -48,7 +76,7 @@ class DayFilter(filters.FilterSet):
     class Meta:
         model = Day
         fields = [
-            "vessel_id", "date", "skipper", "created_at"
+            "vessel_id", "date", "created_at"
         ]
 
 

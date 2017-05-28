@@ -1,6 +1,6 @@
 import json
 
-from logbook_app.models import Day, Hour, PortOfCall, Vessel
+from captains_log.logbook_app.models import Day, Hour, PortOfCall, Vessel, Crew
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -8,12 +8,19 @@ from .config.day_config import DAY_1, DAY_2
 from .config.hour_config import HOUR_SET_1
 from .config.portofcall_config import PORT_OF_CALL_1, PORT_OF_CALL_2
 from .config.vessel_config import VESSEL_1, VESSEL_2
+from .config.crew_config import CREW_1, CREW_2
 
 
 class VesselCreateTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.crew_1 = Crew.objects.create(**CREW_1)
+        self.crew_2 = Crew.objects.create(**CREW_2)
+        VESSEL_1["owner"] = self.crew_1.id
+        VESSEL_1["skipper"] = self.crew_1.id
+        VESSEL_2["owner"] = self.crew_2.id
+        VESSEL_2["skipper"] = self.crew_2.id
         self.vessel_1 = self.client.post(
             "/logbook/api/vessels/", VESSEL_1, format="json")
         self.vessel_1_content = json.loads(self.vessel_1.content)
@@ -23,13 +30,13 @@ class VesselCreateTests(APITestCase):
 
     def tearDown(self):
         Vessel.objects.all().delete()
+        Crew.objects.all().delete()
 
     def test_created_vessel(self):
         """
         Ensure we can create a new account object.
         """
-        found_vessel = Vessel.objects.get(pk=1)
-
+        found_vessel = Vessel.objects.get(pk=self.vessel_1_content["id"])
         self.assertEqual(self.vessel_1.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Vessel.objects.count(), 2)
         self.assertEqual(VESSEL_1["name"], found_vessel.name)
@@ -63,7 +70,7 @@ class VesselCreateTests(APITestCase):
             "/logbook/api/vessels/1", format="json", follow=True)
         content = json.loads(response.content)
 
-        self.assertEqual(content["owner_name"], VESSEL_1["owner_name"])
+        self.assertEqual(content["owner"], VESSEL_1["owner"])
 
     def test_get_vessel_2(self):
         """
@@ -73,13 +80,19 @@ class VesselCreateTests(APITestCase):
             "/logbook/api/vessels/2", format="json", follow=True)
         content = json.loads(response.content)
 
-        self.assertEqual(content["owner_name"], VESSEL_2["owner_name"])
+        self.assertEqual(content["owner"], VESSEL_2["owner"])
 
 
 class VesselCheckByDateTests(APITestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.crew_1 = Crew.objects.create(**CREW_1)
+        self.crew_2 = Crew.objects.create(**CREW_2)
+        VESSEL_1["owner"] = self.crew_1
+        VESSEL_1["skipper"] = self.crew_1
+        VESSEL_2["owner"] = self.crew_2
+        VESSEL_2["skipper"] = self.crew_2
         self.vessel_1 = Vessel.objects.create(**VESSEL_1)
         self.vessel_2 = Vessel.objects.create(**VESSEL_2)
         self.port_of_call_1 = PortOfCall.objects.create(**PORT_OF_CALL_1)
@@ -99,6 +112,7 @@ class VesselCheckByDateTests(APITestCase):
         self.hour_set_1 = Hour.objects.filter(day=self.day_1)
 
     def tearDown(self):
+        Crew.objects.all().delete()
         Vessel.objects.all().delete()
         PortOfCall.objects.all().delete()
         Day.objects.all().delete()

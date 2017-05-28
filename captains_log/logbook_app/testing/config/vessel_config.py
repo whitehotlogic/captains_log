@@ -5,13 +5,11 @@ VESSEL_1 = {
     "model": "36C",
     "length": 36.3,
     "draft": 5.5,
-    "fuel_capacity": 50,
-    "water_capacity": 65,
-    "battery_capacity": 120,
     "engine_manufacturer": "Yanmar",
     "engine_number": "0987ZYxw",
     "engine_type": "Diesel",
-    "owner_name": "singlerider",
+    "owner": 1,
+    "skipper": 1,
     "owner_certification_agency": "USCG",
     "owner_certification_number": "31415926"
 }
@@ -23,13 +21,11 @@ VESSEL_2 = {
     "model": "36",
     "length": 36.1,
     "draft": 5.3,
-    "fuel_capacity": 40,
-    "water_capacity": 32,
-    "battery_capacity": 150,
     "engine_manufacturer": "Universal",
     "engine_number": "ZYxw0987",
     "engine_type": "Electric",
-    "owner_name": "singlehander",
+    "owner": 2,
+    "skipper": 2,
     "owner_certification_agency": "CA DMV",
     "owner_certification_number": "6876GHJ"
 }

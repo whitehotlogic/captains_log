@@ -3,10 +3,16 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from logbook_app import serializers
-from logbook_app.filters import (CrewFilter, DayFilter, HourFilter,
-                                 PortOfCallFilter, TripFilter, VesselFilter)
-from logbook_app.models import Crew, Day, Hour, Note, PortOfCall, Trip, Vessel
+from captains_log.logbook_app import serializers
+from captains_log.logbook_app.filters import (CrewFilter, DayFilter,
+                                              HourFilter, PortOfCallFilter,
+                                              ProvisionFilter,
+                                              SupplyProvisionFilter,
+                                              SupplyFilter, TripFilter,
+                                              VesselFilter)
+from captains_log.logbook_app.models import (Crew, Day, Hour, Note, PortOfCall,
+                                             Provision, Supply,
+                                             SupplyProvision, Trip, Vessel)
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -30,6 +36,35 @@ class VesselViewSet(NestedViewSetMixin, ModelViewSet):
     queryset = Vessel.objects.all()
     serializer_class = serializers.VesselSerializer
     filter_class = VesselFilter
+
+
+class ProvisionViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that allows provisions to be viewed or edited.
+    All measurements are in feet/gallons.
+    """
+    queryset = Provision.objects.all()
+    serializer_class = serializers.ProvisionSerializer
+    filter_class = ProvisionFilter
+
+
+class SupplyViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that allows vessels to be viewed or edited.
+    All measurements are in feet/gallons.
+    """
+    queryset = Supply.objects.all()
+    serializer_class = serializers.SupplySerializer
+    filter_class = SupplyFilter
+
+
+class SupplyProvisionViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that allows supply provisions to be viewed or edited.
+    All measurements are in feet/gallons.
+    """
+    queryset = SupplyProvision.objects.all()
+    serializer_class = serializers.SupplyProvisionSerializer
 
 
 class PortOfCallViewSet(NestedViewSetMixin, ModelViewSet):

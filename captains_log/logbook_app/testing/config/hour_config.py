@@ -10,8 +10,6 @@ HOUR_SET_1 = [{
     "wind_direction": 47,
     "visibility": 3,
     "engine_hours": 145.6,
-    "fuel_level": 55,
-    "water_level": 60,
     "distance_since_last_entry": 0
 }, {
     "day": 1,
@@ -25,8 +23,6 @@ HOUR_SET_1 = [{
     "wind_direction": 58,
     "visibility": 3,
     "engine_hours": 145.6,
-    "fuel_level": 55,
-    "water_level": 59,
     "distance_since_last_entry": 0
 }, {
     "day": 1,
@@ -40,7 +36,5 @@ HOUR_SET_1 = [{
     "wind_direction": 57,
     "visibility": 3,
     "engine_hours": 145.6,
-    "fuel_level": 55,
-    "water_level": 50,
     "distance_since_last_entry": 0
 }]

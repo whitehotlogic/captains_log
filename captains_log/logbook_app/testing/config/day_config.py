@@ -4,8 +4,7 @@ DAY_1 = {
     "date": "2017-04-30",
     "total_distance_this_day": 0,
     "high_tide": 8.2,
-    "low_tide": -3.6,
-    "skipper": "singlerider"
+    "low_tide": -3.6
 }
 
 DAY_2 = {
@@ -14,8 +13,7 @@ DAY_2 = {
     "date": "2017-05-01",
     "total_distance_this_day": 0,
     "high_tide": 4.2,
-    "low_tide": -1.3,
-    "skipper": "singlehander"
+    "low_tide": -1.3
 }
 
 DAY_3 = {
@@ -24,8 +22,7 @@ DAY_3 = {
     "date": "2017-05-02",
     "total_distance_this_day": 0,
     "high_tide": 4.2,
-    "low_tide": -2.3,
-    "skipper": "doublerider"
+    "low_tide": -2.3
 }
 
 DAY_4 = {
@@ -34,6 +31,5 @@ DAY_4 = {
     "date": "2017-05-02",
     "total_distance_this_day": 0,
     "high_tide": 3.4,
-    "low_tide": -3.8,
-    "skipper": "doublehander"
+    "low_tide": -3.8
 }

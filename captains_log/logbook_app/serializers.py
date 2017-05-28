@@ -1,6 +1,7 @@
 from drf_queryfields import QueryFieldsMixin
-from models import Crew, Day, Hour, Note, PortOfCall, Trip, Vessel
-from rest_framework.serializers import (DateField, HyperlinkedModelSerializer,
+from models import (Crew, Day, Hour, Note, PortOfCall, Provision, Supply,
+                    SupplyProvision, Trip, Vessel)
+from rest_framework.serializers import (DateField, ModelSerializer,
                                         ModelSerializer,
                                         PrimaryKeyRelatedField)
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
@@ -8,25 +9,25 @@ from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
 
 class CrewSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
-        class Meta:
-            model = Crew
-            fields = (
-                "id", "url", "name", "can_skipper"
-            )
+    class Meta:
+        model = Crew
+        fields = (
+            "id", "name", "can_skipper", "is_active",
+            "created_at", "updated_at"
+        )
 
 
 class VesselSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = Vessel
         fields = (
-            "id", "url", "name", "manufacturer", "length", "draft", "model",
-            "hull_number", "fuel_capacity", "water_capacity",
-            "battery_capacity", "engine_manufacturer", "engine_number",
+            "id", "name", "manufacturer", "length", "draft", "model",
+            "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "image", "created_at", "updated_at"
         )
@@ -40,33 +41,66 @@ class VesselHistorySerializer(
         model = Vessel
         fields = (
             "id", "name", "manufacturer", "length", "draft", "model",
-            "hull_number", "fuel_capacity", "water_capacity",
-            "battery_capacity", "engine_manufacturer", "engine_number",
+            "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "created_at", "updated_at"
         )
 
 
+class ProvisionSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = Provision
+        fields = (
+            "id", "name", "measurement_name", "created_at", "updated_at"
+        )
+
+
+class SupplySerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = Supply
+        fields = (
+            "vessel", "fuel", "water",
+            "battery", "provisions", "created_at", "updated_at"
+        )
+
+
+class SupplyProvisionSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = SupplyProvision
+        fields = (
+            "id", "supply", "provision", "quantity", "created_at"
+        )
+
+
 class PortOfCallSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = PortOfCall
         fields = (
-            "id", "url", "name", "latitude", "longitude", "notes",
+            "id", "name", "latitude", "longitude", "notes",
             "created_at", "updated_at"
         )
 
 
 class TripSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = Trip
         fields = (
-            "id", "url", "name", "vessels", "start_date", "end_date",
+            "id", "name", "vessels", "start_date", "end_date",
             "starting_port", "stops", "destination_port",
             "created_at", "updated_at"
         )
@@ -85,7 +119,7 @@ class PortOfCallHistorySerializer(
 
 
 class VesselNestedSerializer(
-        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, ModelSerializer):
 
     class Meta:
         model = Vessel
@@ -93,7 +127,7 @@ class VesselNestedSerializer(
 
 
 class PortOfCallNestedSerializer(
-        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, ModelSerializer):
 
     class Meta:
         model = PortOfCall
@@ -101,36 +135,36 @@ class PortOfCallNestedSerializer(
 
 
 class DayDetailSerializer(
-        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, ModelSerializer):
     vessel = VesselSerializer(read_only=True)
     port_of_call = PortOfCallSerializer(read_only=True)
 
     class Meta:
         model = Day
         fields = (
-            "id", "url", "vessel", "port_of_call", "date",
-            "total_distance_this_day", "high_tide", "low_tide", "skipper",
+            "id", "vessel", "port_of_call", "date",
+            "total_distance_this_day", "high_tide", "low_tide",
             "created_at", "updated_at"
         )
 
 
 class DayListSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
     vessel = VesselNestedSerializer(read_only=True)
     port_of_call = PortOfCallNestedSerializer(read_only=True)
 
     class Meta:
         model = Day
         fields = (
-            "id", "url", "vessel", "port_of_call", "date",
-            "total_distance_this_day", "high_tide", "low_tide", "skipper",
+            "id", "vessel", "port_of_call", "date",
+            "total_distance_this_day", "high_tide", "low_tide",
             "created_at", "updated_at"
         )
 
 
 class DayCreateSerializer(
-        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, ModelSerializer):
     vessel = PrimaryKeyRelatedField(
         queryset=Vessel.objects.all())
     port_of_call = PrimaryKeyRelatedField(
@@ -152,50 +186,48 @@ class DayCreateSerializer(
 
 
 class DateSerializer(
-        PartialUpdateSerializerMixin, HyperlinkedModelSerializer):
+        PartialUpdateSerializerMixin, ModelSerializer):
 
     class Meta:
         model = Day
-        fields = ("url", "date")
+        fields = ("date")
 
 
 class HourSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = Hour
         fields = (
-            "id", "url", "day", "time", "course", "speed", "latitude",
+            "id", "day", "time", "course", "speed", "latitude",
             "longitude", "weather", "wind_speed", "wind_direction",
-            "visibility", "engine_hours", "fuel_level", "water_level",
-            "distance_since_last_entry", "timezone",
-            "created_at", "updated_at"
+            "visibility", "engine_hours", "distance_since_last_entry",
+            "timezone", "created_at", "updated_at"
         )
 
 
 class DateHourSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = Hour
         fields = (
-            "id", "url", "time", "course", "speed", "latitude",
+            "id", "time", "course", "speed", "latitude",
             "longitude", "weather", "wind_speed", "wind_direction",
-            "visibility", "engine_hours", "fuel_level", "water_level",
-            "distance_since_last_entry", "timezone",
-            "created_at", "updated_at"
+            "visibility", "engine_hours", "distance_since_last_entry",
+            "timezone", "created_at", "updated_at"
         )
 
 
 class NoteSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
-        HyperlinkedModelSerializer):
+        ModelSerializer):
 
     class Meta:
         model = Note
         fields = (
-            "id", "url", "timestamp", "vessel", "note", "created_at",
+            "id", "timestamp", "vessel", "note", "created_at",
             "updated_at"
         )
