@@ -6,10 +6,8 @@ from collections import OrderedDict
 from captains_log.logbook_app import serializers
 from captains_log.logbook_app.filters import (CrewFilter, DayFilter,
                                               HourFilter, PortOfCallFilter,
-                                              ProvisionFilter,
-                                              SupplyProvisionFilter,
-                                              SupplyFilter, TripFilter,
-                                              VesselFilter)
+                                              ProvisionFilter, SupplyFilter,
+                                              TripFilter, VesselFilter)
 from captains_log.logbook_app.models import (Crew, Day, Hour, Note, PortOfCall,
                                              Provision, Supply,
                                              SupplyProvision, Trip, Vessel)
@@ -24,8 +22,16 @@ class CrewViewSet(NestedViewSetMixin, ModelViewSet):
     API endpoint that allows crew to be viewed or edited
     """
     queryset = Crew.objects.all()
-    serializer_class = serializers.CrewSerializer
     filter_class = CrewFilter
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return serializers.CrewCreateUpdateSerializer
+        if self.action == "update":
+            return serializers.CrewCreateUpdateSerializer
+        if self.action == "partial_update":
+            return serializers.CrewCreateUpdateSerializer
+        return serializers.CrewSerializer
 
 
 class VesselViewSet(NestedViewSetMixin, ModelViewSet):
@@ -93,13 +99,13 @@ class DayViewSet(NestedViewSetMixin, ModelViewSet):
     filter_class = DayFilter
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return serializers.DayListSerializer
         if self.action == "retrieve":
             return serializers.DayDetailSerializer
         if self.action == "create":
             return serializers.DayCreateSerializer
         if self.action == "update":
+            return serializers.DayCreateSerializer
+        if self.action == "partial_update":
             return serializers.DayCreateSerializer
         return serializers.DayListSerializer
 
@@ -114,6 +120,19 @@ class VesselHistoryViewSet(NestedViewSetMixin, ModelViewSet):
 
     def get_queryset(self):
         history = Vessel.history.filter(id=self.kwargs["pk"])
+        return history
+
+
+class SupplyHistoryViewSet(NestedViewSetMixin, ModelViewSet):
+    """
+    API endpoint that shows history of vessel changes.
+    All measurements are in feet/gallons.
+    """
+    queryset = Supply.history.all()
+    serializer_class = serializers.SupplyHistorySerializer
+
+    def get_queryset(self):
+        history = Supply.history.filter(id=self.kwargs["pk"])
         return history
 
 
@@ -145,8 +164,6 @@ class DateViewSet(NestedViewSetMixin, ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return serializers.DayListSerializer
         if self.action == "retrieve":
             return serializers.DayDetailSerializer
         if self.action == "create":

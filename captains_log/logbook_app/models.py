@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from simple_history.models import HistoricalRecords
 
 
 class Crew(models.Model):
-    name = models.CharField(max_length=255, null=False)
+    crew_name = models.CharField(max_length=255, null=False)
+    crew_user = models.OneToOneField(
+        User, null=True,
+        help_text="Optionally associate a crew member with a user account"
+    )
     can_skipper = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -18,13 +23,13 @@ class Crew(models.Model):
 
     def __str__(self):
         if self.can_skipper:
-            return "{0} (can skipper)".format(self.name)
+            return "{0} (can skipper)".format(self.crew_name)
         else:
             return self.name
 
     class Meta:
         indexes = [
-            models.Index(fields=["name"]),
+            models.Index(fields=["crew_name"]),
             models.Index(fields=["can_skipper"]),
             models.Index(fields=["is_active"]),
             models.Index(fields=["can_skipper", "is_active"]),
@@ -32,7 +37,7 @@ class Crew(models.Model):
 
 
 class Vessel(models.Model):
-    name = models.CharField(max_length=255, null=False)
+    vessel_name = models.CharField(max_length=255, null=False)
     model = models.CharField(max_length=100, null=True)
     manufacturer = models.CharField(max_length=100, null=True)
     length = models.DecimalField(
@@ -60,13 +65,13 @@ class Vessel(models.Model):
     def __str__(self):
         if self.skipper is not None:
             return "{0}, owned by {1}, current skipper: {2}".format(
-                self.name, self.owner, self.skipper.name)
+                self.vessel_name, self.owner, self.skipper.crew_name)
         else:
             return "{0}, owned by {1}".format(self.name, self.owner)
 
     class Meta:
         indexes = [
-            models.Index(fields=["name"]),
+            models.Index(fields=["vessel_name"]),
             models.Index(fields=["manufacturer"]),
             models.Index(fields=["model"]),
             models.Index(fields=["hull_number"]),
@@ -79,7 +84,7 @@ class Vessel(models.Model):
 
 
 class Provision(models.Model):
-    name = models.CharField(max_length=255, null=False)
+    provision_name = models.CharField(max_length=255, null=False)
     measurement_name = models.CharField(
         max_length=255, null=False,
         help_text="Example: gallons / loaves / cans"
@@ -88,22 +93,26 @@ class Provision(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "{0}, measured in: {1}".format(self.name, self.measurement_name)
+        return "{0}, measured in: {1}".format(
+            self.provision_name, self.measurement_name)
 
 
 class Supply(models.Model):  # extend Vessel
     vessel = models.ForeignKey(Vessel)
     fuel = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text="Measured in gallons"
     )
     water = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text="Measured in gallons"
     )
     battery = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text="Measured in Voltage"
     )
     provisions = models.ManyToManyField(Provision, through='SupplyProvision')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -111,7 +120,7 @@ class Supply(models.Model):  # extend Vessel
     history = HistoricalRecords()
 
     def __str__(self):
-        return "Supply for: {0}".format(self.vessel.name)
+        return "{0}".format(self.vessel.vessel_name)
 
 
 class SupplyProvision(models.Model):
@@ -125,7 +134,7 @@ class SupplyProvision(models.Model):
 
     def __str__(self):
         return "{0} for {1}".format(
-            self.provision.name, self.supply.vessel)
+            self.provision.provision_name, self.supply.vessel)
 
     indexes = [
         models.Index(fields=["supply"]),
@@ -135,7 +144,7 @@ class SupplyProvision(models.Model):
 
 
 class PortOfCall(models.Model):
-    name = models.CharField(max_length=255)
+    port_of_call_name = models.CharField(max_length=255)
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
     notes = models.CharField(max_length=1024, default="", null=False)
@@ -149,7 +158,7 @@ class PortOfCall(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["name"]),
+            models.Index(fields=["port_of_call_name"]),
             models.Index(fields=["latitude", "longitude"]),
             models.Index(fields=["created_at"]),
         ]
@@ -157,7 +166,7 @@ class PortOfCall(models.Model):
 
 
 class Trip(models.Model):
-    name = models.CharField(max_length=255)
+    trip_name = models.CharField(max_length=255)
     vessels = models.ManyToManyField(Vessel, blank=False)
     start_date = models.DateField(null=False, default=date.today)
     end_date = models.DateField(null=True)
@@ -172,11 +181,11 @@ class Trip(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{0}".format(self.name)
+        return "{0}".format(self.trip_name)
 
     class Meta:
         indexes = [
-            models.Index(fields=["name"]),
+            models.Index(fields=["trip_name"]),
             models.Index(fields=["start_date"]),
             models.Index(fields=["end_date"]),
             models.Index(fields=["starting_port"]),
@@ -203,7 +212,7 @@ class Day(models.Model):
 
     def __str__(self):
         return "{0} - {1}:{2}, on {3}".format(
-            self.vessel.name, self.vessel.owner_certification_agency,
+            self.vessel_name, self.vessel.owner_certification_agency,
             self.vessel.owner_certification_number, self.date
         )
 

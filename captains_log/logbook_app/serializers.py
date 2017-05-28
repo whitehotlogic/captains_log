@@ -1,10 +1,92 @@
+from datetime import datetime
+
+from django.contrib.auth.models import User
 from drf_queryfields import QueryFieldsMixin
 from models import (Crew, Day, Hour, Note, PortOfCall, Provision, Supply,
                     SupplyProvision, Trip, Vessel)
-from rest_framework.serializers import (DateField, ModelSerializer,
-                                        ModelSerializer,
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.serializers import (CharField, DateField, ModelSerializer,
                                         PrimaryKeyRelatedField)
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
+
+
+class CrewCreateUpdateSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    crew_user_password = CharField(
+        default=None, max_length=128)
+
+    def create(self, validated_data):
+        crew_user = validated_data.get("crew_user", None)
+        crew_user_password = validated_data.get("crew_user_password", None)
+        if "crew_user_password" in validated_data:
+            del validated_data["crew_user_password"]
+        if crew_user is not None:
+            if isinstance(crew_user, User):
+                if crew_user.check_password(crew_user_password):
+                    return Crew.objects.create(**validated_data)
+                else:
+                    raise PermissionDenied(
+                        "Incorrect password for User {0}".format(
+                            crew_user.username)
+                    )
+            else:
+                try:
+                    crew_user_id = int(crew_user)
+                    try:
+                        user = User.objects.get(pk=crew_user_id)
+                    except User.DoesNotExist:
+                        raise PermissionDenied("Incorrect password for User")
+                    if user.check_password(crew_user_password):
+                        return Crew.objects.create(**validated_data)
+                    raise PermissionDenied("Incorrect password for User")
+                except ValueError:
+                    pass
+        return Crew.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        crew_user = validated_data.get("crew_user", None)
+        crew_user_password = validated_data.get("crew_user_password", None)
+        if "crew_user_password" in validated_data:
+            del validated_data["crew_user_password"]
+        if crew_user is not None:
+            if isinstance(crew_user, User):
+                if crew_user.check_password(crew_user_password):
+                    instance.crew_user = crew_user
+                else:
+                    raise PermissionDenied(
+                        "Incorrect password for User {0}".format(
+                            crew_user.username)
+                    )
+            else:
+                try:
+                    crew_user_id = int(crew_user)
+                    try:
+                        user = User.objects.get(pk=crew_user_id)
+                    except User.DoesNotExist:
+                        raise PermissionDenied("Incorrect password for User")
+                    if user.check_password(crew_user_password):
+                        instance.crew_user = user
+                    raise PermissionDenied("Incorrect password for User")
+                except ValueError:
+                    pass
+        else:
+            instance.crew_user = None
+        instance.can_skipper = validated_data.get(
+            "can_skipper", instance.can_skipper)
+        instance.is_active = validated_data.get(
+            "is_active", instance.is_active)
+        instance.updated_at = datetime.now()
+        instance.save()
+        return instance
+
+    class Meta:
+        model = Crew
+        fields = (
+            "id", "crew_name", "crew_user", "crew_user_password",
+            "can_skipper", "is_active", "created_at", "updated_at"
+        )
 
 
 class CrewSerializer(
@@ -14,8 +96,8 @@ class CrewSerializer(
     class Meta:
         model = Crew
         fields = (
-            "id", "name", "can_skipper", "is_active",
-            "created_at", "updated_at"
+            "id", "crew_name", "crew_user",
+            "can_skipper", "is_active", "created_at", "updated_at"
         )
 
 
@@ -26,7 +108,7 @@ class VesselSerializer(
     class Meta:
         model = Vessel
         fields = (
-            "id", "name", "manufacturer", "model", "length", "draft",
+            "id", "vessel_name", "manufacturer", "model", "length", "draft",
             "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "image", "created_at", "updated_at"
@@ -40,8 +122,8 @@ class VesselHistorySerializer(
     class Meta:
         model = Vessel
         fields = (
-            "id", "name", "manufacturer",  "model", "length", "draft",
-            "hull_number", "engine_manufacturer", "engine_number",
+            "history_id", "vessel_name", "manufacturer",  "model", "length",
+            "draft", "hull_number", "engine_manufacturer", "engine_number",
             "engine_type", "owner", "skipper", "owner_certification_agency",
             "owner_certification_number", "created_at", "updated_at"
         )
@@ -54,7 +136,8 @@ class ProvisionSerializer(
     class Meta:
         model = Provision
         fields = (
-            "id", "name", "measurement_name", "created_at", "updated_at"
+            "id", "provision_name", "measurement_name",
+            "created_at", "updated_at"
         )
 
 
@@ -67,6 +150,18 @@ class SupplySerializer(
         fields = (
             "vessel", "fuel", "water",
             "battery", "provisions", "created_at", "updated_at"
+        )
+
+
+class SupplyHistorySerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = Supply
+        fields = (
+            "vessel", "fuel", "water",
+            "battery", "created_at", "updated_at"
         )
 
 
@@ -88,20 +183,7 @@ class PortOfCallSerializer(
     class Meta:
         model = PortOfCall
         fields = (
-            "id", "name", "latitude", "longitude", "notes",
-            "created_at", "updated_at"
-        )
-
-
-class TripSerializer(
-        QueryFieldsMixin, PartialUpdateSerializerMixin,
-        ModelSerializer):
-
-    class Meta:
-        model = Trip
-        fields = (
-            "id", "name", "vessels", "start_date", "end_date",
-            "starting_port", "stops", "destination_port",
+            "id", "port_of_call_name", "latitude", "longitude", "notes",
             "created_at", "updated_at"
         )
 
@@ -113,7 +195,20 @@ class PortOfCallHistorySerializer(
     class Meta:
         model = PortOfCall
         fields = (
-            "id", "name", "latitude", "longitude", "notes",
+            "history_id", "port_of_call_name", "latitude", "longitude",
+            "notes", "created_at", "updated_at"
+        )
+
+
+class TripSerializer(
+        QueryFieldsMixin, PartialUpdateSerializerMixin,
+        ModelSerializer):
+
+    class Meta:
+        model = Trip
+        fields = (
+            "id", "trip_name", "vessels", "start_date", "end_date",
+            "starting_port", "stops", "destination_port",
             "created_at", "updated_at"
         )
 
@@ -123,7 +218,7 @@ class VesselNestedSerializer(
 
     class Meta:
         model = Vessel
-        fields = ("id", "url")
+        fields = ("id",)
 
 
 class PortOfCallNestedSerializer(
@@ -131,7 +226,7 @@ class PortOfCallNestedSerializer(
 
     class Meta:
         model = PortOfCall
-        fields = ("id", "url")
+        fields = ("id",)
 
 
 class DayDetailSerializer(

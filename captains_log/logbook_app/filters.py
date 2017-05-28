@@ -9,7 +9,7 @@ class CrewFilter(filters.FilterSet):
     class Meta:
         model = Crew
         fields = [
-            "name", "can_skipper"
+            "crew_name", "can_skipper"
         ]
 
 
@@ -18,10 +18,10 @@ class VesselFilter(filters.FilterSet):
     class Meta:
         model = Vessel
         fields = [
-            "name", "owner", "skipper", "manufacturer", "model", "hull_number",
-            "engine_manufacturer", "engine_number", "engine_type",
-            "owner_certification_agency", "owner_certification_number",
-            "created_at"
+            "vessel_name", "owner", "skipper", "manufacturer", "model",
+            "hull_number", "engine_manufacturer", "engine_number",
+            "engine_type", "owner_certification_agency",
+            "owner_certification_number", "created_at"
         ]
 
 
@@ -30,7 +30,7 @@ class ProvisionFilter(filters.FilterSet):
     class Meta:
         model = Provision
         fields = [
-            "name", "created_at", "updated_at"
+            "provision_name", "created_at", "updated_at"
         ]
 
 
@@ -57,7 +57,7 @@ class TripFilter(filters.FilterSet):
     class Meta:
         model = Trip
         fields = [
-            "name", "vessels", "starting_port", "stops", "destination_port",
+            "trip_name", "vessels", "starting_port", "stops", "destination_port",
             "start_date", "end_date", "created_at", "updated_at"
         ]
 
@@ -67,7 +67,7 @@ class PortOfCallFilter(filters.FilterSet):
     class Meta:
         model = PortOfCall
         fields = [
-            "name", "latitude", "longitude", "created_at"
+            "port_of_call_name", "latitude", "longitude", "created_at"
         ]
 
 
