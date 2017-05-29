@@ -354,5 +354,5 @@ class NoteSerializer(
     class Meta:
         model = Note
         fields = (
-            "id", "timestamp", "vessel", "note", "created_at", "updated_at"
+            "id", "vessel", "note", "created_at", "updated_at"
         )
