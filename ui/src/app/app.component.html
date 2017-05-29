@@ -1,7 +1,18 @@
-<h1></h1>
-<div>
-  Vessels
-  <span *ngFor="let vessel of vessels">
-  <vessel [data]="vessel"></vessel>
-  </span>
-</div>
+<md-sidenav-container>
+  <md-toolbar color="primary" class="md2 md-toolbar md-primary">
+    <button md-button routerLink="/" routerLinkActive="active">Home</button>
+    <button md-button routerLink="/vessels" routerLinkActive="active">Vessels</button>
+    <button md-button routerLink="/trips" routerLinkActive="active">Trips</button>
+    <md-toolbar-row>
+      <button md-raised-button routerLink="/current-trip" routerLinkActive="active">Current Trip</button>
+      <button md-raised-button routerLink="/day" routerLinkActive="active">Current Day</button>
+      <button md-raised-button routerLink="/new-trip" routerLinkActive="active">New Trip</button>
+      <button md-raised-button routerLink="/day" routerLinkActive="active">New Day</button>
+      <button md-raised-button routerLink="/hour" routerLinkActive="active">New Log Entry</button>
+      <button md-raised-button routerLink="/new-crew" routerLinkActive="active">New Crew</button>
+      <button md-raised-button routerLink="/new-poc" routerLinkActive="active">New Port of Call</button>
+      <button md-raised-button routerLink="/new-vessel" routerLinkActive="active">New Vessel</button>
+    </md-toolbar-row>
+  </md-toolbar>
+  <router-outlet></router-outlet>
+</md-sidenav-container>

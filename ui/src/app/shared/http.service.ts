@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -8,13 +8,20 @@ import { Vessel, PortOfCall, Hour, Day, Note, CaseConverters } from './types';
 
 @Injectable()
 export class HttpService {
-  url: string = 'http://127.0.0.1:8000/logbook/api/'
-
-  constructor(private http: Http) {}
+  url: string = 'http://localhost:4200/logbook/api/'
+  headers: Headers;
+  constructor(private http: Http) {
+      this.headers = new Headers();  //*******
+      this.headers.append('Content-Type', 'application/json') //******
+  }
 
   getVessels(): Observable<Vessel[]> {
     return this.http.get(this.url+ 'vessels')
             .map(this.extractData);
+  }
+
+  saveVessel(vesselDetails): Observable<Response> {
+    return this.http.post(this.url+'vessels/', vesselDetails);
   }
 
   getPorts(): Observable<PortOfCall[]> {

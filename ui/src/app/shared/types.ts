@@ -23,12 +23,20 @@ export class Vessel {
     constructor() {
     }
 
+    newVessel = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
+
     toHttp = (params: Vessel) => {
+        console.log(params)
         let converter = new CaseConverters();
         let postObj = {}
         for(let key in params){
             postObj[converter.camelToSnake(key)] = params[key];
         }
+        return postObj;
     }
 }
 

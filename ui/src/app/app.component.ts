@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { HttpService } from './http.service';
-import { Vessel } from './types';
+import { HttpService } from './shared/http.service';
+import { Vessel } from './shared/types';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +9,11 @@ import { Vessel } from './types';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
   vessels: Array<Vessel>;
 
   constructor(private httpService: HttpService){
     httpService.getVessels().subscribe((vessels) => {
       this.vessels = vessels;
-      console.log(vessels);
     });
   }
 }

@@ -1,0 +1,14 @@
+export const ACTIONS = {
+    //view reducer Actions
+    CHANGEVIEW: 'CHANGEVIEW',
+    GOBACK: 'GOBACK',
+
+
+    //vessel reducer Actions
+    LOADVESSELS: 'LOADVESSELS',
+    ADDVESSEL: 'ADDVESSEL',
+    DELETEVESSEL: 'DELETEVESSEL',
+    UPDATEVESSEL: 'UPDATEVESSEL',
+    SETCURRENTVESSEL: 'SETCURRENTVESSEL'
+
+}

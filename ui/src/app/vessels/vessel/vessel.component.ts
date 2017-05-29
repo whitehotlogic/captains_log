@@ -1,6 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-
-import { Vessel } from '../types';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'vessel',
@@ -8,12 +6,10 @@ import { Vessel } from '../types';
   styleUrls: ['./vessel.component.css']
 })
 export class VesselComponent implements OnInit {
-  @Input() data: Vessel;
 
   constructor() { }
 
   ngOnInit() {
-    console.log('data in vessel component', this.data);
   }
 
 }

@@ -1,0 +1,6 @@
+<div *ngFor="let boatField of boatFields">
+  <md-input-container>
+    <input mdInput placeholder="{{boatField.label}}" [(ngModel)]="boatField.value">
+  </md-input-container>
+</div>
+<button md-button (click)="saveVessel()">Save</button>

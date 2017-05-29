@@ -1,0 +1,14 @@
+<md-grid-list cols="2" row-height="2:1">
+  <md-grid-tile
+    *ngFor="let vessel of vessels" 
+    (click)="onSelect(vessel)">
+      <md-card>
+        <md-card-title>{{vessel.name}}</md-card-title>
+        <md-card-content>
+          <div *ngFor="let entry of vessel | keys">
+            {{entry.key}}: {{entry.val}}
+          </div>
+        </md-card-content>
+      </md-card>
+    </md-grid-tile>
+</md-grid-list>
