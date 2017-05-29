@@ -12,8 +12,6 @@ class CreateUpdateMiddleware(object):
     def acting_user(self):
         if hasattr(self.request.user, "_wrapped"):
             return self.request.user._wrapped
-        else:
-            return self.request.user
 
 
 class UserCreateUpdateMiddleware(object):
