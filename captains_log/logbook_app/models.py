@@ -314,7 +314,6 @@ class Note(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["note"]),
-            models.Index(fields=["timestamp"]),
             models.Index(fields=["created_at"]),
         ]
         get_latest_by = "created_at"
