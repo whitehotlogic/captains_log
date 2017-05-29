@@ -54,6 +54,13 @@ class UserSerializer(
         )
 
 
+class UserAutocompleteSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("id", "username")
+
+
 class CrewCreateUpdateSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
@@ -86,6 +93,13 @@ class CrewSerializer(
             "id", "crew_name", "crew_user",
             "can_skipper", "is_active", "created_at", "updated_at"
         )
+
+
+class CrewAutocompleteSerializer(ModelSerializer):
+
+    class Meta:
+        model = Crew
+        fields = ("id", "crew_name")
 
 
 class VesselSerializer(
@@ -124,6 +138,13 @@ class VesselHistorySerializer(
         )
 
 
+class VesselAutocompleteSerializer(ModelSerializer):
+
+    class Meta:
+        model = Vessel
+        fields = ("id", "vessel_name")
+
+
 class ProvisionSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
@@ -134,6 +155,13 @@ class ProvisionSerializer(
             "id", "provision_name", "measurement_name",
             "created_at", "updated_at"
         )
+
+
+class ProvisionAutocompleteSerializer(ModelSerializer):
+
+    class Meta:
+        model = Provision
+        fields = ("id", "provision_name")
 
 
 class SupplySerializer(
@@ -217,6 +245,13 @@ class PortOfCallHistorySerializer(
             "history_id", "port_of_call_name", "latitude", "longitude",
             "notes", "created_at", "updated_at"
         )
+
+
+class PortOfCallAutocompleteSerializer(ModelSerializer):
+
+    class Meta:
+        model = PortOfCall
+        fields = ("id", "port_of_call_name")
 
 
 class TripSerializer(

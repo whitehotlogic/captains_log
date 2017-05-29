@@ -45,6 +45,17 @@ urlpatterns = [
         views.SupplyHistoryViewSet.as_view({"get": "list"})),
     url(r"^logbook/api/portsofcall/(?P<pk>[0-9]+)/history/$",
         views.PortOfCallHistoryViewSet.as_view({"get": "list"})),
+    # autocomplete
+    url(r"autocomplete/users",
+        views.UserAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/crew",
+        views.CrewAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/vessels",
+        views.VesselAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/provisions",
+        views.ProvisionAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/portsofcall",
+        views.PortOfCallAutocompleteViewSet.as_view({"get": "list"})),
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

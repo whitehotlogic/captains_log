@@ -38,6 +38,23 @@ class UserViewSet(ModelViewSet):
         return serializers.UserSerializer
 
 
+class UserAutocompleteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    API Endpoint for receiving a completed username from a partial match
+    """
+    queryset = User.objects.all()
+
+    def list(self, request):
+        if self.request.GET.get("username"):
+            queryset = self.queryset.filter(
+                vessel_name__icontains=self.request.GET[
+                    "username"])[:10]
+            serializer = serializers.UserAutocompleteSerializer(
+                queryset, context={"request": request}, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 class CrewViewSet(NestedViewSetMixin, ModelViewSet):
     """
     API endpoint that allows crew to be viewed or edited
@@ -55,6 +72,23 @@ class CrewViewSet(NestedViewSetMixin, ModelViewSet):
         return serializers.CrewSerializer
 
 
+class CrewAutocompleteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    API Endpoint for receiving a completed crew_name from a partial match
+    """
+    queryset = Crew.objects.all()
+
+    def list(self, request):
+        if self.request.GET.get("crew_name"):
+            queryset = self.queryset.filter(
+                crew_name__icontains=self.request.GET[
+                    "crew_name"])[:10]
+            serializer = serializers.CrewAutocompleteSerializer(
+                queryset, context={"request": request}, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 class VesselViewSet(NestedViewSetMixin, ModelViewSet):
     """
     API endpoint that allows vessels to be viewed or edited.
@@ -65,6 +99,24 @@ class VesselViewSet(NestedViewSetMixin, ModelViewSet):
     filter_class = VesselFilter
 
 
+class VesselAutocompleteViewSet(
+        mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    API Endpoint for receiving a completed vessel_name from a partial match
+    """
+    queryset = Vessel.objects.all()
+
+    def list(self, request):
+        if self.request.GET.get("vessel_name"):
+            queryset = self.queryset.filter(
+                vessel_name__icontains=self.request.GET[
+                    "vessel_name"])[:10]
+            serializer = serializers.VesselAutocompleteSerializer(
+                queryset, context={"request": request}, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 class ProvisionViewSet(NestedViewSetMixin, ModelViewSet):
     """
     API endpoint that allows provisions to be viewed or edited.
@@ -73,6 +125,24 @@ class ProvisionViewSet(NestedViewSetMixin, ModelViewSet):
     queryset = Provision.objects.all()
     serializer_class = serializers.ProvisionSerializer
     filter_class = ProvisionFilter
+
+
+class ProvisionAutocompleteViewSet(
+        mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    API Endpoint for receiving a completed provision_name from a partial match
+    """
+    queryset = Provision.objects.all()
+
+    def list(self, request):
+        if self.request.GET.get("provision_name"):
+            queryset = self.queryset.filter(
+                provision_name__icontains=self.request.GET[
+                    "provision_name"])[:10]
+            serializer = serializers.ProvisionAutocompleteSerializer(
+                queryset, context={"request": request}, many=True)
+            return Response(serializer.data)
+        return Response([])
 
 
 class SupplyViewSet(NestedViewSetMixin, ModelViewSet):
@@ -168,6 +238,24 @@ class PortOfCallHistoryViewSet(NestedViewSetMixin, ModelViewSet):
     def get_queryset(self):
         history = PortOfCall.history.filter(id=self.kwargs["pk"])
         return history
+
+
+class PortOfCallAutocompleteViewSet(
+        mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    API Endpoint for receiving a completed port_of_call from a partial match
+    """
+    queryset = PortOfCall.objects.all()
+
+    def list(self, request):
+        if self.request.GET.get("port_of_call_name"):
+            queryset = self.queryset.filter(
+                port_of_call_name__icontains=self.request.GET[
+                    "port_of_call_name"])[:10]
+            serializer = serializers.PortOfCallAutocompleteSerializer(
+                queryset, context={"request": request}, many=True)
+            return Response(serializer.data)
+        return Response([])
 
 
 class DateViewSet(NestedViewSetMixin, ModelViewSet):

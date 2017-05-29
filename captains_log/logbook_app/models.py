@@ -107,6 +107,11 @@ class Provision(models.Model):
         return "{0}, measured in: {1}".format(
             self.provision_name, self.measurement_name)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["provision_name"])
+        ]
+
 
 class Supply(models.Model):  # extend Vessel
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
