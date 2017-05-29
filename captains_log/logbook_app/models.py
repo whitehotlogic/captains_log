@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -11,6 +12,7 @@ from simple_history.models import HistoricalRecords
 
 
 class Crew(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     crew_name = models.CharField(max_length=255, null=False)
     crew_user = models.OneToOneField(
         User, null=True,
@@ -18,6 +20,8 @@ class Crew(models.Model):
     )
     can_skipper = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, related_name="crew_created_by_user")
+    updated_by = models.ForeignKey(User, related_name="crew_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -25,7 +29,7 @@ class Crew(models.Model):
         if self.can_skipper:
             return "{0} (can skipper)".format(self.crew_name)
         else:
-            return self.name
+            return self.crew_name
 
     class Meta:
         indexes = [
@@ -37,16 +41,17 @@ class Crew(models.Model):
 
 
 class Vessel(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     vessel_name = models.CharField(max_length=255, null=False)
     model = models.CharField(max_length=100, null=True)
     manufacturer = models.CharField(max_length=100, null=True)
     length = models.DecimalField(
         max_digits=5, decimal_places=1, null=False,
-        validators=[MinValueValidator(Decimal('0.01'))]
+        validators=[MinValueValidator(Decimal("0.01"))]
     )
     draft = models.DecimalField(
         max_digits=5, decimal_places=1, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal("0.00"))]
     )
     hull_number = models.CharField(max_length=255, null=False)
     engine_manufacturer = models.CharField(max_length=255, null=True)
@@ -55,8 +60,10 @@ class Vessel(models.Model):
     owner = models.ForeignKey(Crew, null=True, related_name="vessel_owner")
     skipper = models.OneToOneField(
         Crew, null=True, related_name="vessel_skipper", db_column="skipper")
-    owner_certification_agency = models.CharField(max_length=255)
-    owner_certification_number = models.CharField(max_length=255)
+    certification_agency = models.CharField(max_length=255)
+    certification_number = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, related_name="vessel_created_by_user")
+    updated_by = models.ForeignKey(User, related_name="vessel_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(null=True)
@@ -75,8 +82,8 @@ class Vessel(models.Model):
             models.Index(fields=["manufacturer"]),
             models.Index(fields=["model"]),
             models.Index(fields=["hull_number"]),
-            models.Index(fields=["owner_certification_agency"]),
-            models.Index(fields=["owner_certification_number"]),
+            models.Index(fields=["certification_agency"]),
+            models.Index(fields=["certification_number"]),
             models.Index(fields=["owner"]),
             models.Index(fields=["created_at"]),
         ]
@@ -84,7 +91,7 @@ class Vessel(models.Model):
 
 
 class Provision(models.Model):
-    provision_name = models.CharField(max_length=255, null=False)
+    provision_name = models.CharField(max_length=255, null=False, unique=True)
     measurement_name = models.CharField(
         max_length=255, null=False,
         help_text="Example: gallons / loaves / cans"
@@ -98,23 +105,26 @@ class Provision(models.Model):
 
 
 class Supply(models.Model):  # extend Vessel
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     vessel = models.ForeignKey(Vessel)
     fuel = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))],
+        validators=[MinValueValidator(Decimal("0.00"))],
         help_text="Measured in gallons"
     )
     water = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))],
+        validators=[MinValueValidator(Decimal("0.00"))],
         help_text="Measured in gallons"
     )
     battery = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.00'))],
+        validators=[MinValueValidator(Decimal("0.00"))],
         help_text="Measured in Voltage"
     )
-    provisions = models.ManyToManyField(Provision, through='SupplyProvision')
+    provisions = models.ManyToManyField(Provision, through="SupplyProvision")
+    created_by = models.ForeignKey(User, related_name="supply_created_by_user")
+    updated_by = models.ForeignKey(User, related_name="supply_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -124,13 +134,20 @@ class Supply(models.Model):  # extend Vessel
 
 
 class SupplyProvision(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     supply = models.ForeignKey(Supply)
     provision = models.ForeignKey(Provision)
     quantity = models.DecimalField(
         max_digits=5, decimal_places=2, null=False,
-        validators=[MinValueValidator(Decimal('0.01'))]
+        validators=[MinValueValidator(Decimal("0.01"))]
     )
+    created_by = models.ForeignKey(
+        User, related_name="supply_provision_created_by_user")
+    updated_by = models.ForeignKey(
+        User, related_name="supply_provision_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{0} for {1}".format(
@@ -144,10 +161,15 @@ class SupplyProvision(models.Model):
 
 
 class PortOfCall(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     port_of_call_name = models.CharField(max_length=255)
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
     notes = models.CharField(max_length=1024, default="", null=False)
+    created_by = models.ForeignKey(
+        User, related_name="port_of_call_created_by_user")
+    updated_by = models.ForeignKey(
+        User, related_name="port_of_call_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -166,6 +188,7 @@ class PortOfCall(models.Model):
 
 
 class Trip(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     trip_name = models.CharField(max_length=255)
     vessels = models.ManyToManyField(Vessel, blank=False)
     start_date = models.DateField(null=False, default=date.today)
@@ -176,6 +199,10 @@ class Trip(models.Model):
     stops = models.ManyToManyField(PortOfCall, blank=True)
     destination_port = models.ForeignKey(
         PortOfCall, null=False, related_name="trip_destination_port")
+    created_by = models.ForeignKey(
+        User, related_name="trip_of_call_created_by_user")
+    updated_by = models.ForeignKey(
+        User, related_name="trip_of_call_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -203,7 +230,7 @@ class Day(models.Model):
     date = models.DateField(null=False, blank=False)
     total_distance_this_day = models.DecimalField(
         max_digits=5, decimal_places=2, null=False, default=0.0,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal("0.00"))]
     )
     high_tide = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     low_tide = models.DecimalField(max_digits=5, decimal_places=2, null=False)
@@ -273,11 +300,16 @@ class Hour(models.Model):
 
 
 class Note(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True, null=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     vessel = models.ForeignKey(Vessel, null=False)
     note = models.CharField(max_length=1024, null=False)
+    created_by = models.ForeignKey(
+        User, related_name="note_of_call_created_by_user")
+    updated_by = models.ForeignKey(
+        User, related_name="note_of_call_updated_by_user")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     class Meta:
         indexes = [

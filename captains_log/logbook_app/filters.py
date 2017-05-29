@@ -20,8 +20,8 @@ class VesselFilter(filters.FilterSet):
         fields = [
             "vessel_name", "owner", "skipper", "manufacturer", "model",
             "hull_number", "engine_manufacturer", "engine_number",
-            "engine_type", "owner_certification_agency",
-            "owner_certification_number", "created_at"
+            "engine_type", "certification_agency",
+            "certification_number", "created_at"
         ]
 
 

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from drf_queryfields import QueryFieldsMixin
-from middleware import (CrewCreateUpdateSerializerMiddleware,
-                        UserCreateUpdateSerializerMiddleware)
+from captains_log.logbook_app import middleware
 from models import (Crew, Day, Hour, Note, PortOfCall, Provision, Supply,
                     SupplyProvision, Trip, Vessel)
 from rest_framework.serializers import (CharField, DateField, ModelSerializer,
@@ -14,7 +13,7 @@ class UserCreateSerializer(
         ModelSerializer):
 
     def create(self, validated_data):
-        user = UserCreateUpdateSerializerMiddleware().create(validated_data)
+        user = middleware.UserCreateUpdateMiddleware().create(validated_data)
         user.password = None
         return user
 
@@ -29,11 +28,11 @@ class UserUpdateSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
-    old_password = CharField(default=None, max_length=128)
+    current_password = CharField(default=None, max_length=128)
     new_password = CharField(default=None, max_length=128)
 
     def update(self, instance, validated_data):
-        return UserCreateUpdateSerializerMiddleware().update(
+        return middleware.UserCreateUpdateMiddleware().update(
             instance, validated_data)
 
     class Meta:
@@ -62,11 +61,12 @@ class CrewCreateUpdateSerializer(
     crew_user_password = CharField(default=None, max_length=128)
 
     def create(self, validated_data):
-        return CrewCreateUpdateSerializerMiddleware().create(validated_data)
+        return middleware.CrewCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
 
     def update(self, instance, validated_data):
-        return CrewCreateUpdateSerializerMiddleware().update(
-            instance, validated_data)
+        return middleware.CrewCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
 
     class Meta:
         model = Crew
@@ -92,13 +92,21 @@ class VesselSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
+    def create(self, validated_data):
+        return middleware.VesselCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return middleware.VesselCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
+
     class Meta:
         model = Vessel
         fields = (
             "id", "vessel_name", "manufacturer", "model", "length", "draft",
             "hull_number", "engine_manufacturer", "engine_number",
-            "engine_type", "owner", "skipper", "owner_certification_agency",
-            "owner_certification_number", "image", "created_at", "updated_at"
+            "engine_type", "owner", "skipper", "certification_agency",
+            "certification_number", "image", "created_at", "updated_at"
         )
 
 
@@ -111,8 +119,8 @@ class VesselHistorySerializer(
         fields = (
             "history_id", "vessel_name", "manufacturer",  "model", "length",
             "draft", "hull_number", "engine_manufacturer", "engine_number",
-            "engine_type", "owner", "skipper", "owner_certification_agency",
-            "owner_certification_number", "created_at", "updated_at"
+            "engine_type", "owner", "skipper", "certification_agency",
+            "certification_number", "created_at", "updated_at"
         )
 
 
@@ -132,10 +140,18 @@ class SupplySerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
+    def create(self, validated_data):
+        return middleware.SupplyCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return middleware.SupplyCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
+
     class Meta:
         model = Supply
         fields = (
-            "vessel", "fuel", "water",
+            "id", "vessel", "fuel", "water",
             "battery", "provisions", "created_at", "updated_at"
         )
 
@@ -156,16 +172,32 @@ class SupplyProvisionSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
+    def create(self, validated_data):
+        return middleware.SupplyProvisionCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return middleware.SupplyProvisionCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
+
     class Meta:
         model = SupplyProvision
         fields = (
-            "id", "supply", "provision", "quantity", "created_at"
+            "id", "supply", "provision", "quantity", "created_at", "updated_at"
         )
 
 
 class PortOfCallSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
+
+    def create(self, validated_data):
+        return middleware.PortOfCallCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return middleware.PortOfCallCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
 
     class Meta:
         model = PortOfCall
@@ -190,6 +222,14 @@ class PortOfCallHistorySerializer(
 class TripSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
+
+    def create(self, validated_data):
+        return middleware.TripCreateUpdateMiddleware(
+            self.context["request"]).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return middleware.TripCreateUpdateMiddleware(
+            self.context["request"]).update(instance, validated_data)
 
     class Meta:
         model = Trip
@@ -307,9 +347,12 @@ class NoteSerializer(
         QueryFieldsMixin, PartialUpdateSerializerMixin,
         ModelSerializer):
 
+    def create(self, validated_data):
+        return middleware.NoteCreateMiddleware(
+            self.context["request"]).create(validated_data)
+
     class Meta:
         model = Note
         fields = (
-            "id", "timestamp", "vessel", "note", "created_at",
-            "updated_at"
+            "id", "timestamp", "vessel", "note", "created_at", "updated_at"
         )

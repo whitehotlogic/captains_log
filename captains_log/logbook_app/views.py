@@ -13,15 +13,19 @@ from captains_log.logbook_app.models import (Crew, Day, Hour, Note, PortOfCall,
                                              SupplyProvision, Trip, Vessel)
 from django.contrib.auth.models import User
 from rest_framework import status
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
+from rest_framework import mixins, viewsets
 
 
 class UserViewSet(ModelViewSet):
     """
     API Endpoint for registering users
     """
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
     queryset = User.objects.all()
 
     def get_serializer_class(self):
