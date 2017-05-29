@@ -348,7 +348,7 @@ class NoteSerializer(
         ModelSerializer):
 
     def create(self, validated_data):
-        return middleware.NoteCreateMiddleware(
+        return middleware.NoteCreateUpdateMiddleware(
             self.context["request"]).create(validated_data)
 
     class Meta:

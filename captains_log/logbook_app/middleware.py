@@ -229,7 +229,7 @@ class TripCreateUpdateMiddleware(CreateUpdateMiddleware):
         return instance
 
 
-class NoteCreateMiddleware(CreateUpdateMiddleware):
+class NoteCreateUpadteMiddleware(CreateUpdateMiddleware):
 
     def create(self, validated_data):
         validated_data["created_by"] = self.acting_user()
