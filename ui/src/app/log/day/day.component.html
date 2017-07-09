@@ -1,3 +1,9 @@
-<p>
-  day works!
-</p>
+<md-card>
+  <div *ngFor="let dayField of dayFields">
+    <md-input-container *ngIf="!dayField.readOnly && (dayField.type === 'string' || dayField.type === 'field' || dayField.type === 'float' || dayField.type === 'decimal')">
+      <input mdInput placeholder="{{dayField.label}}" [(ngModel)]="dayField.value">
+    </md-input-container>
+    <md-checkbox  *ngIf="!dayField.readOnly && dayField.type === 'boolean'" value="true">{{dayField.label}}</md-checkbox>
+  </div>
+  <button md-button (click)="saveDay()">Save</button>
+</md-card>

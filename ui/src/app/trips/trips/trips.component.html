@@ -1,3 +1,15 @@
-<p>
-  trips works!
-</p>
+<md-grid-list cols="2" row-height="2:1">
+  <md-grid-tile
+    *ngFor="let trip of trips" 
+    (click)="onSelect(trip)">
+      <md-card>
+        <md-card-title>{{trip.name}}</md-card-title>
+        <md-card-content>
+          <div *ngFor="let entry of trip | keys">
+            {{entry.key}}: {{entry.val}}
+          </div>
+        </md-card-content>
+      </md-card>
+    </md-grid-tile>
+    <button md-raised-button (click)="newTrip()">New Trip</button>
+</md-grid-list>

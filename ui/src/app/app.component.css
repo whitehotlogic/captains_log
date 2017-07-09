@@ -4,3 +4,13 @@
 .mat-sidenav-content, .mat-sidenav-container {
     height: 100%;
 }
+
+.nav-buttons button {
+    margin-right: 0.2rem;
+}
+.mat-toolbar {
+    padding: 0 8px;
+}
+.mat-toolbar-row {
+    height: 48px;
+}

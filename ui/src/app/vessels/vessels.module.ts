@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MdTabsModule, MdCardModule, MdInputModule } from '@angular/material';
+import { MdTabsModule, MdCardModule, MdInputModule, MdButtonModule } from '@angular/material';
 
 import { PipeModule } from '../shared/pipe.module';
 import { VesselsComponent } from './vessels/vessels.component';
@@ -15,6 +15,7 @@ import { NewVesselComponent } from './new-vessel/new-vessel.component';
     MdTabsModule,
     MdCardModule,
     MdInputModule,
+    MdButtonModule,
     PipeModule
   ],
   declarations: [

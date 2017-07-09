@@ -28,5 +28,8 @@ export class VesselsComponent implements OnInit {
   onSelect(vessel: Vessel) {
     this.router.navigate(['/vessel', vessel.id]);
   }
+  newVessel(){
+    this.router.navigate(['/new-vessel'])
+  }
 
 }

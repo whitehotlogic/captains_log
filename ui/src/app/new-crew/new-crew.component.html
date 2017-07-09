@@ -1,3 +1,9 @@
-<p>
-  new-crew works!
-</p>
+<md-card>
+  <div *ngFor="let crewField of crewFields">
+    <md-input-container *ngIf="!crewField.readOnly && (crewField.type === 'string' || crewField.type === 'field' || crewField.type === 'float')">
+      <input mdInput placeholder="{{crewField.label}}" [(ngModel)]="crewField.value">
+    </md-input-container>
+    <md-checkbox  *ngIf="!crewField.readOnly && crewField.type === 'boolean'" value="true">{{crewField.label}}</md-checkbox>
+  </div>
+  <button md-button (click)="saveCrew()">Save</button>
+</md-card>

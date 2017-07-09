@@ -1,3 +1,9 @@
-<p>
-  new-poc works!
-</p>
+<md-card>
+  <div *ngFor="let pocField of pocFields">
+    <md-input-container *ngIf="!pocField.readOnly && (pocField.type === 'string' || pocField.type === 'field' || pocField.type === 'float')">
+      <input mdInput placeholder="{{pocField.label}}" [(ngModel)]="pocField.value">
+    </md-input-container>
+    <md-checkbox  *ngIf="!pocField.readOnly && pocField.type === 'boolean'" value="true">{{pocField.label}}</md-checkbox>
+  </div>
+  <button md-button (click)="savePoc()">Save</button>
+</md-card>

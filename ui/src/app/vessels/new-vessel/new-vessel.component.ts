@@ -14,67 +14,10 @@ export class NewVesselComponent implements OnInit {
   constructor(private httpService: HttpService) { }
 
   ngOnInit() {
-    this.boatFields = [{
-        field: 'name',
-        label: 'Name',
-        value: ''
-      },{
-        field: 'manufacturer',
-        label: 'Manufacturer',
-        value: ''
-      },{
-        field: 'length',
-        label: 'Length',
-        value: ''
-      },{
-        field: 'draft',
-        label: 'Draft',
-        value: ''
-      },{
-        field: 'model',
-        label: 'Model',
-        value: ''
-      },{
-        field: 'hullNumber',
-        label: 'Hull Number',
-        value: ''
-      },{
-        field: 'fuelCapacity',
-        label: 'Fuel Capacity',
-        value: ''
-      },{
-        field: 'waterCapacity',
-        label: 'Water Capacity',
-        value: ''
-      },{
-        field: 'batteryCapacity',
-        label: 'Battery Capacity',
-        value: ''
-      },{
-        field: 'engineManufacturer',
-        label: 'Engine Manufacturer',
-        value: ''
-      },{
-        field: 'engineNumber',
-        label: 'Engine Number',
-        value: ''
-      },{
-        field: 'engineType',
-        label: 'Engine Type',
-        value: ''
-      },{
-        field: 'ownerName',
-        label: 'Owner Name',
-        value: ''
-      },{
-        field: 'ownerCertificationAgency',
-        label: 'Owner Certification Agency',
-        value: ''
-      },{
-        field: 'ownerCertificationNumber',
-        label: 'Owner Certification Number',
-        value: ''
-    }]
+    this.httpService.getVesselOptions().subscribe((options)=>{
+      this.boatFields = options;
+      console.log(this.boatFields)
+    });
   }
 
   saveVessel = () => {

@@ -50,6 +50,13 @@ export class PortOfCall {
 
     constructor(){}
 
+    newPoc = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
+
+
     toHttp = (params: PortOfCall) => {
         let converter = new CaseConverters();
         let postObj = {}
@@ -70,7 +77,13 @@ export class Day {
     createdAt: string;
     updatedAt: string;
 
-    constructor(params){}
+    constructor(){}
+
+    newDay = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
 
     toHttp = (params: Day) => {
         let converter = new CaseConverters();
@@ -103,6 +116,12 @@ export class Hour {
     constructor(){
     }
 
+    newHour = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
+
     toHttp = (params: Hour) => {
         let converter = new CaseConverters();
         let postObj = {}
@@ -129,6 +148,72 @@ export class Note {
         }
     }
 }
+
+export class User {
+
+}
+
+export class Crew {
+    id: string;
+    crewName: string;
+    crewUser: User;
+    canSkipper: boolean;
+    isActive: boolean;
+    createdBy: User;
+    updatedBy: User;
+    createdAt: string;
+    updatedAt: string;
+
+    constructor(){}
+
+    newCrew = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
+
+    toHttp = (params: Crew) => {
+        let converter = new CaseConverters();
+        let postObj = {}
+        for(let key in params){
+            postObj[converter.camelToSnake(key)] = params[key];
+        }
+    }
+}
+
+export class Trip {
+    id: string;
+    trip_name: string;
+    vessels: Array<Vessel>;
+    start_date: string;
+    end_date: string;
+    starting_port: Array<PortOfCall>;
+    crew: Array<Crew>;
+    stops: PortOfCall;
+    destination_port: PortOfCall;
+    created_by: User;
+    updated_by: User;
+    created_at: string;
+    updated_at: string;
+    history: Array<Trip>;
+
+    constructor(){}
+
+    newTrip = (formObj) => {
+        for (var index = 0; index < formObj.length; index++) {
+            this[formObj[index].field] = formObj[index].value;
+        }
+    }
+
+    toHttp = (params: Trip) => {
+        let converter = new CaseConverters();
+        let postObj = {}
+        for(let key in params){
+            postObj[converter.camelToSnake(key)] = params[key];
+        }
+    }
+}
+
 
 export class CaseConverters {
     public snakeToCamel = (word) =>{

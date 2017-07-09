@@ -1,3 +1,9 @@
-<p>
-  hour works!
-</p>
+<md-card>
+  <div *ngFor="let hourField of hourFields">
+    <md-input-container *ngIf="!hourField.readOnly && (hourField.type === 'string' || hourField.type === 'field' || hourField.type === 'float')">
+      <input mdInput placeholder="{{hourField.label}}" [(ngModel)]="hourField.value">
+    </md-input-container>
+    <md-checkbox  *ngIf="!hourField.readOnly && hourField.type === 'boolean'" value="true">{{hourField.label}}</md-checkbox>
+  </div>
+  <button md-button (click)="saveHour()">Save</button>
+</md-card>
