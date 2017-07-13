@@ -1,15 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule, MdButtonModule, MdToolbarModule, MdSidenavModule, MdTabsModule, MdGridListModule, MdInputModule } from '@angular/material';
 
-import { }
+import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
+import { DynamicFormComponent } from './dynamic-form.component';
+import { QuestionControlService } from './question-control.service';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    MaterialModule,
+    MdButtonModule,
+    MdInputModule,
+    ReactiveFormsModule
   ],
   declarations: [
+    DynamicFormQuestionComponent,
+    DynamicFormComponent
+  ],
+  exports: [
+    DynamicFormComponent
+  ],
+  providers: [
+    QuestionControlService
   ]
 })
-export class LogModule { }
+export class DynamicFormModule { }

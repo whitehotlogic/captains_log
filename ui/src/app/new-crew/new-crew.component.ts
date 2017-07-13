@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HttpService } from '../shared/http.service';
 import { Crew } from '../shared/types';
+import { QuestionControlService } from '../shared/dynamic-form/question-control.service';
 
 @Component({
   selector: 'new-crew',
@@ -10,11 +11,11 @@ import { Crew } from '../shared/types';
 })
 export class NewCrewComponent implements OnInit {
   crewFields: Array<object>;
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService, private questionService: QuestionControlService) { }
 
   ngOnInit() {
     this.httpService.getCrewOptions().subscribe((options)=>{
-      this.crewFields = options;
+      this.crewFields = this.questionService.toQuestionBase(options);
     });
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HttpService } from '../../shared/http.service';
 import { Day } from '../../shared/types';
+import { QuestionControlService } from '../../shared/dynamic-form/question-control.service';
 
 @Component({
   selector: 'day',
@@ -10,12 +11,12 @@ import { Day } from '../../shared/types';
 })
 export class DayComponent implements OnInit {
   dayFields: Array<object>;
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService, private questionService: QuestionControlService) { }
 
   ngOnInit() {
     this.httpService.getDayOptions().subscribe((options)=>{
       console.log(options)
-      this.dayFields = options;
+      this.dayFields = this.questionService.toQuestionBase(options);
     });
   }
 

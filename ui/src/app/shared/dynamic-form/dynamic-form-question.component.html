@@ -3,12 +3,34 @@
  
   <div [ngSwitch]="question.controlType">
  
-    <input *ngSwitchCase="'textbox'" [formControlName]="question.key"
-            [id]="question.key" [type]="question.type">
+    <input *ngSwitchCase="'string'" [formControlName]="question.key"
+            [id]="question.key" [type]="'text'">
+
+    <input *ngSwitchCase="'decimal'" [formControlName]="question.key"
+            [id]="question.key" [type]="'number'">
+
+    <input *ngSwitchCase="'float'" [formControlName]="question.key"
+            [id]="question.key" [type]="'number'">
+
+    <input *ngSwitchCase="'integer'" [formControlName]="question.key"
+            [id]="question.key" [type]="'number'">    
+
+    <input *ngSwitchCase="'datetime'" [formControlName]="question.key"
+            [id]="question.key" [type]="'datetime-local'" default="new Date()">
+    
+    <input *ngSwitchCase="'date'" [formControlName]="question.key"
+            [id]="question.key" [type]="'date'">
+    
+    <input *ngSwitchCase="'image upload'" [formControlName]="question.key"
+            [id]="question.key" [type]="'image'">
  
-    <select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
+    <select [id]="question.key" *ngSwitchCase="'field'" [formControlName]="question.key">
       <option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>
     </select>
+
+    <md-checkbox *ngSwitchCase="'boolean'" [formControlName]="question.key"
+            [id]="question.key"></md-checkbox>
+
  
   </div> 
  

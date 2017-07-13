@@ -12,6 +12,7 @@ import { VesselsModule } from './vessels/vessels.module';
 
 import { PipeModule } from './shared/pipe.module';
 import { HttpService } from './shared/http.service';
+import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './shared/app.routes';
@@ -41,6 +42,7 @@ import { NewPocComponent } from './new-poc/new-poc.component';
     MdInputModule,
     BrowserAnimationsModule,
     PipeModule,
+    DynamicFormModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
@@ -48,4 +50,4 @@ import { NewPocComponent } from './new-poc/new-poc.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

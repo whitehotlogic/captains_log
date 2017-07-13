@@ -16,4 +16,12 @@ export class QuestionControlService {
     });
     return new FormGroup(group);
   }
+
+  toQuestionBase(srcQuestions: Array<any>){
+    let newQuestions = []
+    srcQuestions.forEach(element => {
+      newQuestions.push(new QuestionBase(element));
+    });
+    return newQuestions;
+  }
 }

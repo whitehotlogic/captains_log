@@ -18,7 +18,7 @@ export class HourComponent implements OnInit {
     });
   }
 
-  saveCrew = () => {
+  saveHour = () => {
     let hourDetails = new Hour();
     hourDetails.newHour(this.hourFields);
     let convertedDetails = hourDetails.toHttp(hourDetails);
