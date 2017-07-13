@@ -180,7 +180,7 @@ class SupplySerializer(
         model = Supply
         fields = (
             "id", "vessel", "fuel", "water",
-            "battery", "provisions", "created_at", "updated_at"
+            "battery", "created_at", "updated_at"
         )
 
 
