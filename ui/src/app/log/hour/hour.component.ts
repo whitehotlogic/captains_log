@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HttpService } from '../../shared/http.service';
 import { Hour } from '../../shared/types';
+import { QuestionControlService } from '../../shared/dynamic-form/question-control.service';
 
 @Component({
   selector: 'hour',
@@ -10,11 +11,11 @@ import { Hour } from '../../shared/types';
 })
 export class HourComponent implements OnInit {
   hourFields: Array<object>;
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService, private questionService: QuestionControlService) { }
 
   ngOnInit() {
     this.httpService.getHourOptions().subscribe((options)=>{
-      this.hourFields = options;
+      this.hourFields = this.questionService.toQuestionBase(options);
     });
   }
 

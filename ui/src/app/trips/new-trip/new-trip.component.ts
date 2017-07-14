@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { HttpService } from '../../shared/http.service';
 import { Trip } from '../../shared/types';
+import { QuestionControlService } from '../../shared/dynamic-form/question-control.service';
 
 @Component({
   selector: 'new-trip',
@@ -11,11 +12,11 @@ import { Trip } from '../../shared/types';
 export class NewTripComponent implements OnInit {
 
   tripFields: Array<object>;
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService, private questionService: QuestionControlService) { }
 
   ngOnInit() {
     this.httpService.getTripOptions().subscribe((options)=>{
-      this.tripFields = options;
+      this.tripFields = this.questionService.toQuestionBase(options);
       console.log(this.tripFields)
     });
   }
