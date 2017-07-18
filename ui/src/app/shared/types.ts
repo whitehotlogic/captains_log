@@ -24,8 +24,8 @@ export class Vessel {
     }
 
     newVessel = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 
@@ -51,8 +51,8 @@ export class PortOfCall {
     constructor(){}
 
     newPoc = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 
@@ -80,8 +80,8 @@ export class Day {
     constructor(){}
 
     newDay = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 
@@ -117,8 +117,8 @@ export class Hour {
     }
 
     newHour = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 
@@ -164,11 +164,14 @@ export class Crew {
     createdAt: string;
     updatedAt: string;
 
-    constructor(){}
+    constructor(){
+        this.isActive = false;
+        this.canSkipper = false;
+    }
 
     newCrew = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 
@@ -178,6 +181,7 @@ export class Crew {
         for(let key in params){
             postObj[converter.camelToSnake(key)] = params[key];
         }
+        return postObj;
     }
 }
 
@@ -200,8 +204,8 @@ export class Trip {
     constructor(){}
 
     newTrip = (formObj) => {
-        for (var index = 0; index < formObj.length; index++) {
-            this[formObj[index].field] = formObj[index].value;
+        for(let key in formObj){
+            this[key] = formObj[key];
         }
     }
 

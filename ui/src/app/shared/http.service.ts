@@ -6,6 +6,15 @@ import 'rxjs/add/operator/map';
 
 import { Vessel, PortOfCall, Hour, Day, Note, CaseConverters, Crew, Trip } from './types';
 
+let urlLookup = {
+  User: 'getUsers',
+  Vessel: 'getVessels',
+  Port: 'getPorts',
+  Day: 'getDays',
+  Crew: 'getCrew'
+}
+
+
 @Injectable()
 export class HttpService {
   url: string = 'http://localhost:4200/logbook/api/'
@@ -129,12 +138,21 @@ export class HttpService {
     let element = body.actions.POST;
     let fields = [];
     for(let key in element){
+      if (body.actions.POST[key]['read_only'] === true){
+        continue;
+      }
       let fieldsObj = {}
       let newKey = converter.snakeToCamel(key);
       fieldsObj = body.actions.POST[key];
-      fieldsObj['readOnly'] = fieldsObj['read_only'];
-      fieldsObj['field'] = newKey
+      fieldsObj['field'] = newKey;
+      fieldsObj['key'] = newKey;
       fieldsObj['value'] = '';
+      debugger;
+      if(fieldsObj['type'] === 'many to one'){
+        this[urlLookup[fieldsObj['model']]]().subscribe((opts)=>{
+          fieldsObj['options'] = opts;
+        });
+      }
       fields.push(fieldsObj);
     }
     return fields;

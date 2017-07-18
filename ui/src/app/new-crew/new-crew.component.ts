@@ -19,9 +19,9 @@ export class NewCrewComponent implements OnInit {
     });
   }
 
-  saveCrew = () => {
+  onSubmit(formData) {
     let crewDetails = new Crew();
-    crewDetails.newCrew(this.crewFields);
+    crewDetails.newCrew(formData);
     let convertedDetails = crewDetails.toHttp(crewDetails);
     this.httpService.saveCrew(convertedDetails).subscribe(()=>{});
   }

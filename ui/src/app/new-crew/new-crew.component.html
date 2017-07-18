@@ -1,3 +1,3 @@
 <md-card *ngIf="crewFields">
-  <dynamic-form [questions]="crewFields"></dynamic-form>
+  <dynamic-form [questions]="crewFields" (formSubmit)="onSubmit($event)"></dynamic-form>
 </md-card>
