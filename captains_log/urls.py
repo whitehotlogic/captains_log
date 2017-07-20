@@ -37,14 +37,25 @@ urlpatterns = [
     url(r"^logbook/api/", include(vessel_day_router.urls)),
     url(r"^logbook/api/", include(vessel_day_hour_router.urls)),
     url(r'^logbook/api/', include(vessel_day_router.urls)),
-    url(r"^logbook/api/vessels/(?P<vessel>[0-9]+)/dates/(?P<date>[0-9]{4}\-[0-9]{2}\-[0-9]{2})/$",  # noqa
+    url(r"^logbook/api/vessels/(?P<vessel>[a-fA-F0-9\-]+)/dates/(?P<date>[0-9]{4}\-[0-9]{2}\-[0-9]{2})/$",  # noqa
         views.DateHourViewSet.as_view({"get": "retrieve"})),
-    url(r"^logbook/api/vessels/(?P<pk>[0-9]+)/history/$",
+    url(r"^logbook/api/vessels/(?P<pk>[a-fA-F0-9\-]+)/history/$",
         views.VesselHistoryViewSet.as_view({"get": "list"})),
-    url(r"^logbook/api/supplies/(?P<pk>[0-9]+)/history/$",
+    url(r"^logbook/api/supplies/(?P<pk>[a-fA-F0-9\-]+)/history/$",
         views.SupplyHistoryViewSet.as_view({"get": "list"})),
-    url(r"^logbook/api/portsofcall/(?P<pk>[0-9]+)/history/$",
+    url(r"^logbook/api/portsofcall/(?P<pk>[a-fA-F0-9\-]+)/history/$",
         views.PortOfCallHistoryViewSet.as_view({"get": "list"})),
+    # autocomplete
+    url(r"autocomplete/users",
+        views.UserAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/crew",
+        views.CrewAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/vessels",
+        views.VesselAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/provisions",
+        views.ProvisionAutocompleteViewSet.as_view({"get": "list"})),
+    url(r"autocomplete/portsofcall",
+        views.PortOfCallAutocompleteViewSet.as_view({"get": "list"})),
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

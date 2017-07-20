@@ -20,8 +20,10 @@ class Crew(models.Model):
     )
     can_skipper = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    created_by = models.ForeignKey(User, related_name="crew_created_by_user")
-    updated_by = models.ForeignKey(User, related_name="crew_updated_by_user")
+    created_by = models.ForeignKey(
+        User, related_name="crew_created_by_user", null=True)
+    updated_by = models.ForeignKey(
+        User, related_name="crew_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -62,8 +64,10 @@ class Vessel(models.Model):
         Crew, null=True, related_name="vessel_skipper", db_column="skipper")
     certification_agency = models.CharField(max_length=255)
     certification_number = models.CharField(max_length=255)
-    created_by = models.ForeignKey(User, related_name="vessel_created_by_user")
-    updated_by = models.ForeignKey(User, related_name="vessel_updated_by_user")
+    created_by = models.ForeignKey(
+        User, related_name="vessel_created_by_user", null=True)
+    updated_by = models.ForeignKey(
+        User, related_name="vessel_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(null=True)
@@ -103,6 +107,11 @@ class Provision(models.Model):
         return "{0}, measured in: {1}".format(
             self.provision_name, self.measurement_name)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["provision_name"])
+        ]
+
 
 class Supply(models.Model):  # extend Vessel
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -123,8 +132,10 @@ class Supply(models.Model):  # extend Vessel
         help_text="Measured in Voltage"
     )
     provisions = models.ManyToManyField(Provision, through="SupplyProvision")
-    created_by = models.ForeignKey(User, related_name="supply_created_by_user")
-    updated_by = models.ForeignKey(User, related_name="supply_updated_by_user")
+    created_by = models.ForeignKey(
+        User, related_name="supply_created_by_user", null=True)
+    updated_by = models.ForeignKey(
+        User, related_name="supply_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -142,9 +153,9 @@ class SupplyProvision(models.Model):
         validators=[MinValueValidator(Decimal("0.01"))]
     )
     created_by = models.ForeignKey(
-        User, related_name="supply_provision_created_by_user")
+        User, related_name="supply_provision_created_by_user", null=True)
     updated_by = models.ForeignKey(
-        User, related_name="supply_provision_updated_by_user")
+        User, related_name="supply_provision_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -167,9 +178,9 @@ class PortOfCall(models.Model):
     longitude = models.FloatField(null=False)
     notes = models.CharField(max_length=1024, default="", null=False)
     created_by = models.ForeignKey(
-        User, related_name="port_of_call_created_by_user")
+        User, related_name="port_of_call_created_by_user", null=True)
     updated_by = models.ForeignKey(
-        User, related_name="port_of_call_updated_by_user")
+        User, related_name="port_of_call_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -200,9 +211,9 @@ class Trip(models.Model):
     destination_port = models.ForeignKey(
         PortOfCall, null=False, related_name="trip_destination_port")
     created_by = models.ForeignKey(
-        User, related_name="trip_of_call_created_by_user")
+        User, related_name="trip_of_call_created_by_user", null=True)
     updated_by = models.ForeignKey(
-        User, related_name="trip_of_call_updated_by_user")
+        User, related_name="trip_of_call_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -239,7 +250,7 @@ class Day(models.Model):
 
     def __str__(self):
         return "{0} - {1}:{2}, on {3}".format(
-            self.vessel.vessel_name, self.vessel.owner_certification_agency,
+            self.vessel.vessel_name, self.vessel.certification_agency,
             self.vessel.owner_certification_number, self.date
         )
 
@@ -280,7 +291,7 @@ class Hour(models.Model):
         datetime_object = datetime(*time_tuple)
         return "{0} - {1}:{2} at {3}".format(
             self.day.vessel.vessel_name,
-            self.day.vessel.owner_certification_agency,
+            self.day.vessel.certification_agency,
             self.day.vessel.owner_certification_number, datetime_object
         )
 
@@ -304,9 +315,9 @@ class Note(models.Model):
     vessel = models.ForeignKey(Vessel, null=False)
     note = models.CharField(max_length=1024, null=False)
     created_by = models.ForeignKey(
-        User, related_name="note_of_call_created_by_user")
+        User, related_name="note_of_call_created_by_user", null=True)
     updated_by = models.ForeignKey(
-        User, related_name="note_of_call_updated_by_user")
+        User, related_name="note_of_call_updated_by_user", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
@@ -314,7 +325,6 @@ class Note(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["note"]),
-            models.Index(fields=["timestamp"]),
             models.Index(fields=["created_at"]),
         ]
         get_latest_by = "created_at"

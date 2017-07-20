@@ -10,7 +10,7 @@ VESSEL_1 = {
     "engine_type": "Diesel",
     "owner": 1,
     "skipper": 1,
-    "owner_certification_agency": "USCG",
+    "certification_agency": "USCG",
     "owner_certification_number": "31415926"
 }
 
@@ -26,6 +26,6 @@ VESSEL_2 = {
     "engine_type": "Electric",
     "owner": 2,
     "skipper": 2,
-    "owner_certification_agency": "CA DMV",
+    "certification_agency": "CA DMV",
     "owner_certification_number": "6876GHJ"
 }
