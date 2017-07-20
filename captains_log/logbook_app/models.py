@@ -250,7 +250,7 @@ class Day(models.Model):
 
     def __str__(self):
         return "{0} - {1}:{2}, on {3}".format(
-            self.vessel.vessel_name, self.vessel.owner_certification_agency,
+            self.vessel.vessel_name, self.vessel.certification_agency,
             self.vessel.owner_certification_number, self.date
         )
 
@@ -291,7 +291,7 @@ class Hour(models.Model):
         datetime_object = datetime(*time_tuple)
         return "{0} - {1}:{2} at {3}".format(
             self.day.vessel.vessel_name,
-            self.day.vessel.owner_certification_agency,
+            self.day.vessel.certification_agency,
             self.day.vessel.owner_certification_number, datetime_object
         )
 
